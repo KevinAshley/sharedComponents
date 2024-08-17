@@ -10,10 +10,10 @@ import Navigator, { RouteGroupIf } from "@/sharedComponents/navigator";
 
 function Header({
     groupedRoutes,
-    headerText,
+    websiteName,
 }: {
     groupedRoutes: RouteGroupIf[];
-    headerText: string;
+    websiteName: string;
 }) {
     const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -67,7 +67,7 @@ function Header({
                             }}
                             item
                         >
-                            {headerText}
+                            {websiteName}
                         </Grid>
                         <Grid item xs />
                         <Grid item>

@@ -1,13 +1,8 @@
 "use client";
 
-import { useContext, useState, useEffect } from "react";
+import { useContext } from "react";
 import Snackbar from "@mui/material/Snackbar";
-import IconButton from "@mui/material/IconButton";
-import CloseIcon from "@mui/icons-material/Close";
-import {
-    MainContext,
-    toastVariants,
-} from "@/sharedComponents/contexts/mainContext";
+import { MainContext } from "@/sharedComponents/contexts/mainContext";
 import Alert from "@mui/material/Alert";
 
 const Toast = () => {
