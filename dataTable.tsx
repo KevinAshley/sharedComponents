@@ -372,15 +372,11 @@ const DataTable = ({
                                 return (
                                     <TableRow
                                         hover
-                                        onClick={(event) =>
-                                            handleClick(event, row.id)
-                                        }
                                         role="checkbox"
                                         aria-checked={isItemSelected}
                                         tabIndex={-1}
                                         key={row.id}
                                         selected={isItemSelected}
-                                        sx={{ cursor: "pointer" }}
                                     >
                                         <TableCell padding="checkbox">
                                             <Checkbox
@@ -389,6 +385,9 @@ const DataTable = ({
                                                 inputProps={{
                                                     "aria-labelledby": labelId,
                                                 }}
+                                                onClick={(event) =>
+                                                    handleClick(event, row.id)
+                                                }
                                             />
                                         </TableCell>
                                         {tableColumns.map(
