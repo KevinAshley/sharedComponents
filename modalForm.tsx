@@ -5,13 +5,13 @@ import Form, { FormIf } from "./form";
 interface ModalFormIf extends FormIf {
     title: string;
     open: boolean;
-    setOpen: Function;
+    handleClose: () => void;
 }
 
 const ModalForm = ({
     title,
     open,
-    setOpen,
+    handleClose,
     handleSubmit,
     inputs,
     values,
@@ -29,7 +29,7 @@ const ModalForm = ({
         <Modal
             title={title}
             open={open}
-            setOpen={setOpen}
+            handleClose={handleClose}
             handleSubmit={handleSubmitFromModalButton}
             processing={processing}
         >

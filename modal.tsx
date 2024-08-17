@@ -10,7 +10,7 @@ import CloseIcon from "@mui/icons-material/Close";
 const Modal = ({
     title,
     open,
-    setOpen,
+    handleClose,
     children,
     handleSubmit,
     submitText,
@@ -20,7 +20,7 @@ const Modal = ({
 }: {
     title: string;
     open: boolean;
-    setOpen: Function;
+    handleClose: () => void;
     children: React.ReactNode;
     handleSubmit: VoidFunction;
     submitText?: string;
@@ -28,9 +28,6 @@ const Modal = ({
     noCancel?: boolean;
     disabled?: boolean;
 }) => {
-    const handleClose = () => {
-        setOpen(false);
-    };
     return (
         <Dialog onClose={handleClose} open={open}>
             <DialogTitle
