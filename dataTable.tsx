@@ -19,11 +19,11 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import Switch from "@mui/material/Switch";
 import DeleteIcon from "@mui/icons-material/Delete";
 import FilterListIcon from "@mui/icons-material/FilterList";
-import { PlusOne } from "@mui/icons-material";
-import { Add } from "@mui/icons-material";
-import { AddCircle } from "@mui/icons-material";
+import AddCircle from "@mui/icons-material/AddCircle";
+import EditIcon from "@mui/icons-material/Edit";
 import { visuallyHidden } from "@mui/utils";
 import moment from "moment";
+import { Dispatch, SetStateAction } from "react";
 
 type DataRow = {
     id: number;
@@ -85,7 +85,6 @@ function stableSort<DataRow>(
 }
 
 interface HeadCell {
-    disablePadding: boolean;
     id: keyof DataRow;
     label: string;
     numeric: boolean;
@@ -98,7 +97,7 @@ export interface TableColumnIf {
     date?: boolean;
 }
 
-interface EnhancedTableProps {
+interface EnhancedTableHeadProps {
     numSelected: number;
     onRequestSort: (
         event: React.MouseEvent<unknown>,
@@ -109,9 +108,10 @@ interface EnhancedTableProps {
     orderBy: string | number;
     rowCount: number;
     tableColumns: TableColumnIf[];
+    withActions: boolean;
 }
 
-function EnhancedTableHead(props: EnhancedTableProps) {
+function EnhancedTableHead(props: EnhancedTableHeadProps) {
     const {
         onSelectAllClick,
         order,
@@ -120,6 +120,7 @@ function EnhancedTableHead(props: EnhancedTableProps) {
         rowCount,
         onRequestSort,
         tableColumns,
+        withActions,
     } = props;
     const createSortHandler =
         (property: keyof DataRow) => (event: React.MouseEvent<unknown>) => {
@@ -155,7 +156,6 @@ function EnhancedTableHead(props: EnhancedTableProps) {
                     <TableCell
                         key={headCell.id}
                         align={headCell.numeric ? "right" : "left"}
-                        padding={headCell.disablePadding ? "none" : "normal"}
                         sortDirection={orderBy === headCell.id ? order : false}
                     >
                         <TableSortLabel
@@ -174,6 +174,7 @@ function EnhancedTableHead(props: EnhancedTableProps) {
                         </TableSortLabel>
                     </TableCell>
                 ))}
+                {withActions && <TableCell align={"right"}>Actions</TableCell>}
             </TableRow>
         </TableHead>
     );
@@ -250,6 +251,7 @@ const DataTable = ({
     setSelected,
     deleteSelected,
     tableColumns,
+    setEditingId,
 }: {
     data: DataRow[];
     setAddNewOpen: Function;
@@ -259,6 +261,7 @@ const DataTable = ({
     setSelected: Function;
     deleteSelected: Function;
     tableColumns: TableColumnIf[];
+    setEditingId?: Dispatch<SetStateAction<number | undefined>>;
 }) => {
     const [order, setOrder] = React.useState<Order>("asc");
     const [orderBy, setOrderBy] = React.useState<keyof DataRow>(defaultOrderBy);
@@ -359,6 +362,7 @@ const DataTable = ({
                             onRequestSort={handleRequestSort}
                             rowCount={data.length}
                             tableColumns={tableColumns}
+                            withActions={!!setEditingId}
                         />
                         <TableBody>
                             {visibleRows.map((row, index) => {
@@ -393,7 +397,6 @@ const DataTable = ({
                                                     row[thisColumn.id];
                                                 return (
                                                     <TableCell
-                                                        padding="none"
                                                         key={thisColumnIndex}
                                                     >
                                                         {thisColumn.date &&
@@ -421,6 +424,29 @@ const DataTable = ({
                                                     </TableCell>
                                                 );
                                             }
+                                        )}
+                                        {!!setEditingId && (
+                                            <TableCell
+                                                align={"right"}
+                                                padding={"checkbox"}
+                                            >
+                                                <Tooltip title="Edit">
+                                                    <IconButton
+                                                        onClick={() => {
+                                                            setEditingId(
+                                                                row.id
+                                                            );
+                                                        }}
+                                                        sx={{
+                                                            marginRight: "8px",
+                                                        }}
+                                                    >
+                                                        <EditIcon
+                                                            fontSize={"small"}
+                                                        />
+                                                    </IconButton>
+                                                </Tooltip>
+                                            </TableCell>
                                         )}
                                     </TableRow>
                                 );
