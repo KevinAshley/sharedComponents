@@ -22,7 +22,7 @@ export interface InputIf {
 export interface FormIf {
     inputs: InputIf[];
     handleSubmit: Function;
-    values: { [key: string]: string };
+    values: { [key: string]: string | number | boolean };
     setValues: Function;
     noSubmitButton?: boolean;
     processing?: boolean;
