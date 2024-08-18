@@ -1,8 +1,18 @@
-import React, { Dispatch, Fragment, SetStateAction } from "react";
+import React, {
+    Dispatch,
+    Fragment,
+    SetStateAction,
+    useContext,
+    useState,
+} from "react";
 import DataTable, {
     DataRow,
     TableColumnIf,
 } from "@/sharedComponents/dataTable";
+import {
+    MainContext,
+    toastVariants,
+} from "@/sharedComponents/contexts/mainContext";
 import ModalForm from "@/sharedComponents/modalForm";
 import { InputIf } from "@/sharedComponents/form";
 
@@ -18,15 +28,14 @@ interface DataTableWithModalsIf {
     selectedIds: number[];
     setSelectedIds: Dispatch<SetStateAction<number[]>>;
     deleteSelectedItems: Function;
-    addNew: boolean;
-    setAddNew: Dispatch<SetStateAction<boolean>>;
     editingId: number | undefined;
     setEditingId: Dispatch<SetStateAction<number | undefined>>;
-    addItem: Function;
+    addItem: () => Promise<any>;
     editItem: Function;
     itemFormInputs: InputIf[];
     formValues: FormValuesIf;
     setFormValues: Dispatch<SetStateAction<FormValuesIf>>;
+    reloadItems: () => void;
 }
 
 const DataTableWithModals = ({
@@ -37,8 +46,6 @@ const DataTableWithModals = ({
     selectedIds,
     setSelectedIds,
     deleteSelectedItems,
-    addNew,
-    setAddNew,
     editingId,
     setEditingId,
     addItem,
@@ -46,13 +53,36 @@ const DataTableWithModals = ({
     itemFormInputs,
     formValues,
     setFormValues,
+    reloadItems,
 }: DataTableWithModalsIf) => {
+    const { setToast } = useContext(MainContext);
+
+    const [addingNew, setAddingNew] = useState(false);
+
+    const handleAddItem = () => {
+        addItem()
+            .then(() => {
+                setAddingNew(false);
+                reloadItems();
+                setToast({
+                    message: `Successfully added new ${singularItemLabel}!`,
+                    variant: toastVariants.SUCCESS,
+                });
+            })
+            .catch((err) => {
+                setToast({
+                    message: err.message,
+                    variant: toastVariants.ERROR,
+                });
+            });
+    };
+
     return (
         <Fragment>
             <DataTable
                 title={tableHeading}
                 data={items}
-                setAddNewOpen={setAddNew}
+                setAddNewOpen={setAddingNew}
                 selected={selectedIds}
                 setSelected={setSelectedIds}
                 deleteSelected={deleteSelectedItems}
@@ -62,9 +92,9 @@ const DataTableWithModals = ({
             />
             <ModalForm
                 title={`Add New ${singularItemLabel}`}
-                open={addNew}
-                handleClose={() => setAddNew(false)}
-                handleSubmit={addItem}
+                open={addingNew}
+                handleClose={() => setAddingNew(false)}
+                handleSubmit={handleAddItem}
                 inputs={itemFormInputs}
                 values={formValues}
                 setValues={setFormValues}
