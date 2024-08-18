@@ -19,6 +19,27 @@ import {
 import ModalForm from "@/sharedComponents/modalForm";
 import { FormValuesIf, InputIf } from "@/sharedComponents/form";
 
+const getItemsCountWithSuffix = ({
+    count,
+    singularItemLabel,
+    pluralItemsLabel,
+}: {
+    count: number;
+    singularItemLabel: string;
+    pluralItemsLabel: string;
+}) => {
+    return `${count} ${count > 1 ? pluralItemsLabel : singularItemLabel}`;
+};
+
+const deleteFormInputs: InputIf[] = [
+    {
+        type: "checkbox",
+        label: "Yes, confirm deletion",
+        id: "confirmation",
+        required: true,
+    },
+];
+
 type SelectedIdsType = number[];
 
 interface DataTableWithModalsIf {
@@ -50,9 +71,12 @@ const DataTableWithModals = ({
     const [items, setItems] = useState<DataRow[]>([]);
 
     const [formValues, setFormValues] = useState<FormValuesIf>({});
+    const [deleteFormValues, setDeleteFormValues] = useState<FormValuesIf>({});
     const [addingNew, setAddingNew] = useState(false);
     const [editingId, setEditingId] = useState<number | undefined>(undefined);
     const [selectedIds, setSelectedIds] = useState<SelectedIdsType>([]);
+
+    const [deleting, setDeleting] = useState(false);
 
     const loadItems = useCallback(() => {
         getItems()
@@ -72,16 +96,11 @@ const DataTableWithModals = ({
         }
     }, [initialized, loadItems]);
 
-    const loadItemsAndResetFormValues = () => {
-        loadItems();
-        setFormValues({});
-    };
-
     const handleAddItem = () => {
         addItem(formValues)
             .then(() => {
-                setAddingNew(false);
-                loadItemsAndResetFormValues();
+                handleCloseAddNewModal();
+                loadItems();
                 setToast({
                     message: `Successfully added new ${singularItemLabel}!`,
                     variant: toastVariants.SUCCESS,
@@ -98,8 +117,8 @@ const DataTableWithModals = ({
     const handleEditItem = () => {
         editItem(formValues)
             .then(() => {
-                setEditingId(undefined);
-                loadItemsAndResetFormValues();
+                handleCloseEditingModal();
+                loadItems();
                 setToast({
                     message: `Successfully edited ${singularItemLabel}!`,
                     variant: toastVariants.SUCCESS,
@@ -119,10 +138,13 @@ const DataTableWithModals = ({
             .then(() => {
                 setSelectedIds([]);
                 loadItems();
+                handleCloseDeleteModal();
                 setToast({
-                    message: `Successfully deleted ${deletionCount} ${
-                        deletionCount > 1 ? pluralItemsLabel : singularItemLabel
-                    }!`,
+                    message: `Successfully deleted ${getItemsCountWithSuffix({
+                        count: deletionCount,
+                        singularItemLabel,
+                        pluralItemsLabel,
+                    })}!`,
                     variant: toastVariants.SUCCESS,
                 });
             })
@@ -139,6 +161,16 @@ const DataTableWithModals = ({
         setFormValues({});
     };
 
+    const handleCloseEditingModal = () => {
+        setEditingId(undefined);
+        setFormValues({});
+    };
+
+    const handleCloseDeleteModal = () => {
+        setDeleting(false);
+        setDeleteFormValues({});
+    };
+
     const editingItem = useMemo(() => {
         return editingId
             ? items.find((item) => item.id == editingId)
@@ -148,8 +180,6 @@ const DataTableWithModals = ({
     useEffect(() => {
         if (editingItem) {
             setFormValues(editingItem);
-        } else {
-            setFormValues({});
         }
     }, [editingItem]);
 
@@ -161,7 +191,7 @@ const DataTableWithModals = ({
                 setAddNewOpen={setAddingNew}
                 selected={selectedIds}
                 setSelected={setSelectedIds}
-                deleteSelected={handleDeleteItems}
+                deleteSelected={() => setDeleting(true)}
                 tableColumns={tableColumns}
                 defaultOrderBy={"id"}
                 setEditingId={setEditingId}
@@ -178,11 +208,24 @@ const DataTableWithModals = ({
             <ModalForm
                 title={`Edit ${singularItemLabel}`}
                 open={!!editingId}
-                handleClose={() => setEditingId(undefined)}
+                handleClose={handleCloseEditingModal}
                 handleSubmit={handleEditItem}
                 inputs={itemFormInputs}
                 values={formValues}
                 setValues={setFormValues}
+            />
+            <ModalForm
+                title={`Delete ${getItemsCountWithSuffix({
+                    count: selectedIds.length,
+                    singularItemLabel,
+                    pluralItemsLabel,
+                })}?`}
+                open={deleting}
+                handleClose={handleCloseDeleteModal}
+                handleSubmit={handleDeleteItems}
+                inputs={deleteFormInputs}
+                values={deleteFormValues}
+                setValues={setDeleteFormValues}
             />
         </Fragment>
     );
