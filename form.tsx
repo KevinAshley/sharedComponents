@@ -17,6 +17,7 @@ export interface InputIf {
     label: string;
     id: string;
     required?: boolean;
+    autoComplete?: "off";
 }
 
 export interface FormValuesIf {
@@ -88,7 +89,8 @@ const Form = React.forwardRef(
                     }}
                 >
                     {inputs.map((thisInput, index) => {
-                        const { type, label, id, required } = thisInput;
+                        const { type, label, id, required, autoComplete } =
+                            thisInput;
                         const value = values[id];
                         const handleChange = (
                             e: React.ChangeEvent<HTMLInputElement>
@@ -120,6 +122,7 @@ const Form = React.forwardRef(
                                         name={id}
                                         value={value || ""}
                                         required={required}
+                                        autoComplete={autoComplete}
                                         onChange={handleChange}
                                         fullWidth={true}
                                         disabled={processing}
