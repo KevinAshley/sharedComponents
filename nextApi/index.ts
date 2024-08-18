@@ -1,6 +1,11 @@
 import { NextResponse } from "next/server";
 
-type ApiMethods = "POST" | "PUT" | "GET" | "DELETE";
+export enum ApiMethod {
+    POST = "POST",
+    PUT = "PUT",
+    GET = "GET",
+    DELETE = "DELETE",
+}
 
 interface ErrorMessage {
     message: string;
@@ -38,7 +43,7 @@ export const apiFetchWrapper = ({
     body,
 }: {
     uri: string;
-    method: ApiMethods;
+    method: ApiMethod;
     body?: { [key: string]: any };
 }) => {
     return fetch(uri, {
