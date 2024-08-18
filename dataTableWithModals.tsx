@@ -14,7 +14,7 @@ import DataTable, {
 } from "@/sharedComponents/dataTable";
 import {
     MainContext,
-    toastVariants,
+    ToastVariant,
 } from "@/sharedComponents/contexts/mainContext";
 import ModalForm from "@/sharedComponents/modalForm";
 import { FormValuesIf, InputIf } from "@/sharedComponents/form";
@@ -87,7 +87,7 @@ const DataTableWithModals = ({
             .catch((err) => {
                 setToast({
                     message: err.message,
-                    variant: toastVariants.ERROR,
+                    variant: ToastVariant.ERROR,
                 });
             })
             .finally(() => setLoading(false));
@@ -108,13 +108,13 @@ const DataTableWithModals = ({
                 loadItems();
                 setToast({
                     message: `Successfully added new ${singularItemLabel}!`,
-                    variant: toastVariants.SUCCESS,
+                    variant: ToastVariant.SUCCESS,
                 });
             })
             .catch((err) => {
                 setToast({
                     message: err.message,
-                    variant: toastVariants.ERROR,
+                    variant: ToastVariant.ERROR,
                 });
             })
             .finally(() => {
@@ -130,13 +130,13 @@ const DataTableWithModals = ({
                 loadItems();
                 setToast({
                     message: `Successfully edited ${singularItemLabel}!`,
-                    variant: toastVariants.SUCCESS,
+                    variant: ToastVariant.SUCCESS,
                 });
             })
             .catch((err) => {
                 setToast({
                     message: err.message,
-                    variant: toastVariants.ERROR,
+                    variant: ToastVariant.ERROR,
                 });
             })
             .finally(() => {
@@ -158,13 +158,13 @@ const DataTableWithModals = ({
                         singularItemLabel,
                         pluralItemsLabel,
                     })}!`,
-                    variant: toastVariants.SUCCESS,
+                    variant: ToastVariant.SUCCESS,
                 });
             })
             .catch((err) => {
                 setToast({
                     message: err.message,
-                    variant: toastVariants.ERROR,
+                    variant: ToastVariant.ERROR,
                 });
             })
             .finally(() => {

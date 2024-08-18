@@ -1,54 +1,53 @@
 "use client";
 
-import { createContext, useState } from "react";
+import { createContext, Dispatch, SetStateAction, useState } from "react";
 
-export enum toastVariants {
+export enum ToastVariant {
     "ERROR" = "error",
     "WARNING" = "warning",
     "INFO" = "info",
     "SUCCESS" = "success",
 }
 
-type ToastVariant = toastVariants;
+export interface ToastItemIf {
+    message: string;
+    variant: ToastVariant;
+}
 
 interface MainContextIf {
-    toastMessage: string;
-    toastVariant: ToastVariant;
+    toastItems: ToastItemIf[];
+    setToastItems: Dispatch<SetStateAction<ToastItemIf[]>>;
     setToast: Function;
 }
 
-const defaultValue = {
-    toastMessage: "",
-    toastVariant: toastVariants.INFO,
+export const MainContext = createContext<MainContextIf>({
+    toastItems: [],
+    setToastItems: () => {},
     setToast: () => {},
-};
-
-export const MainContext = createContext<MainContextIf>(defaultValue);
+});
 
 const MainContextProvider = ({
     children,
 }: {
     children: React.ReactNode | React.ReactNode[];
 }) => {
-    const [toastMessage, setToastMessage] = useState("");
-    const [toastVariant, setToastVariant] = useState(toastVariants.INFO);
+    const [toastItems, setToastItems] = useState<ToastItemIf[]>([]);
 
     const setToast = ({
         message,
-        variant,
+        variant = ToastVariant.INFO,
     }: {
         message: string;
         variant?: ToastVariant;
     }) => {
-        setToastMessage(message);
-        setToastVariant((lastVariant) => variant || lastVariant);
+        setToastItems((prev) => [...prev, { message, variant }]);
     };
 
     return (
         <MainContext.Provider
             value={{
-                toastMessage,
-                toastVariant,
+                toastItems,
+                setToastItems,
                 setToast,
             }}
         >
