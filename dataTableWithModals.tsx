@@ -18,14 +18,15 @@ import {
 import ModalForm from "@/sharedComponents/modalForm";
 import { FormValuesIf, InputIf } from "@/sharedComponents/form";
 
+type SelectedIdsType = number[];
+
 interface DataTableWithModalsIf {
     tableHeading: string;
     singularItemLabel: string;
+    pluralItemsLabel: string;
     items: DataRow[];
     tableColumns: TableColumnIf[];
-    selectedIds: number[];
-    setSelectedIds: Dispatch<SetStateAction<number[]>>;
-    deleteSelectedItems: Function;
+    deleteSelectedItems: (selectedIds: SelectedIdsType) => Promise<any>;
     addItem: (formValues: FormValuesIf) => Promise<any>;
     editItem: (formValues: FormValuesIf) => Promise<any>;
     itemFormInputs: InputIf[];
@@ -35,10 +36,9 @@ interface DataTableWithModalsIf {
 const DataTableWithModals = ({
     tableHeading,
     singularItemLabel,
+    pluralItemsLabel,
     items,
     tableColumns,
-    selectedIds,
-    setSelectedIds,
     deleteSelectedItems,
     addItem,
     editItem,
@@ -50,6 +50,7 @@ const DataTableWithModals = ({
     const [formValues, setFormValues] = useState<FormValuesIf>({});
     const [addingNew, setAddingNew] = useState(false);
     const [editingId, setEditingId] = useState<number | undefined>(undefined);
+    const [selectedIds, setSelectedIds] = useState<SelectedIdsType>([]);
 
     const loadItemsAndResetFormValues = () => {
         loadItems();
@@ -92,6 +93,25 @@ const DataTableWithModals = ({
             });
     };
 
+    const handleDeleteItems = () => {
+        const deletionCount = selectedIds.length;
+        deleteSelectedItems(selectedIds)
+            .then(() => {
+                setSelectedIds([]);
+                loadItems();
+                setToast({
+                    message: `Successfully deleted ${deletionCount} ${pluralItemsLabel}!`,
+                    variant: toastVariants.SUCCESS,
+                });
+            })
+            .catch((err) => {
+                setToast({
+                    message: err.message,
+                    variant: toastVariants.ERROR,
+                });
+            });
+    };
+
     const handleCloseAddNewModal = () => {
         setAddingNew(false);
         setFormValues({});
@@ -119,7 +139,7 @@ const DataTableWithModals = ({
                 setAddNewOpen={setAddingNew}
                 selected={selectedIds}
                 setSelected={setSelectedIds}
-                deleteSelected={deleteSelectedItems}
+                deleteSelected={handleDeleteItems}
                 tableColumns={tableColumns}
                 defaultOrderBy={"id"}
                 setEditingId={setEditingId}
