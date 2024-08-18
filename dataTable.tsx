@@ -25,7 +25,7 @@ import { visuallyHidden } from "@mui/utils";
 import moment from "moment";
 import { Dispatch, SetStateAction } from "react";
 
-type DataRow = {
+export type DataRow = {
     id: number;
     [key: string]: string | number | Date | boolean | null;
 };
