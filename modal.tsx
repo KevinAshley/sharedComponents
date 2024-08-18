@@ -29,7 +29,12 @@ const Modal = ({
     disabled?: boolean;
 }) => {
     return (
-        <Dialog onClose={handleClose} open={open}>
+        <Dialog
+            onClose={handleClose}
+            open={open}
+            disableRestoreFocus={true}
+            // ^ this is here so that child inputs can get autoFocused
+        >
             <DialogTitle
                 display={"flex"}
                 justifyContent={"space-between"}

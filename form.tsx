@@ -123,6 +123,7 @@ const Form = React.forwardRef(
                                         onChange={handleChange}
                                         fullWidth={true}
                                         disabled={processing}
+                                        autoFocus={index === 0}
                                     />
                                 )}
                             </Box>
