@@ -1,7 +1,8 @@
+"use client";
+
 import React, {
-    Dispatch,
     Fragment,
-    SetStateAction,
+    useCallback,
     useContext,
     useEffect,
     useMemo,
@@ -24,33 +25,52 @@ interface DataTableWithModalsIf {
     tableHeading: string;
     singularItemLabel: string;
     pluralItemsLabel: string;
-    items: DataRow[];
     tableColumns: TableColumnIf[];
+    getItems: () => Promise<any>;
     deleteSelectedItems: (selectedIds: SelectedIdsType) => Promise<any>;
     addItem: (formValues: FormValuesIf) => Promise<any>;
     editItem: (formValues: FormValuesIf) => Promise<any>;
     itemFormInputs: InputIf[];
-    loadItems: () => void;
 }
 
 const DataTableWithModals = ({
     tableHeading,
     singularItemLabel,
     pluralItemsLabel,
-    items,
     tableColumns,
+    getItems,
     deleteSelectedItems,
     addItem,
     editItem,
     itemFormInputs,
-    loadItems,
 }: DataTableWithModalsIf) => {
     const { setToast } = useContext(MainContext);
+
+    const [initialized, setInitialized] = useState(false);
+    const [items, setItems] = useState<DataRow[]>([]);
 
     const [formValues, setFormValues] = useState<FormValuesIf>({});
     const [addingNew, setAddingNew] = useState(false);
     const [editingId, setEditingId] = useState<number | undefined>(undefined);
     const [selectedIds, setSelectedIds] = useState<SelectedIdsType>([]);
+
+    const loadItems = useCallback(() => {
+        getItems()
+            .then(setItems)
+            .catch((err) => {
+                setToast({
+                    message: err.message,
+                    variant: toastVariants.ERROR,
+                });
+            });
+    }, [getItems, setToast]);
+
+    useEffect(() => {
+        if (!initialized) {
+            loadItems();
+            setInitialized(true);
+        }
+    }, [initialized, loadItems]);
 
     const loadItemsAndResetFormValues = () => {
         loadItems();
@@ -100,7 +120,9 @@ const DataTableWithModals = ({
                 setSelectedIds([]);
                 loadItems();
                 setToast({
-                    message: `Successfully deleted ${deletionCount} ${pluralItemsLabel}!`,
+                    message: `Successfully deleted ${deletionCount} ${
+                        deletionCount > 1 ? pluralItemsLabel : singularItemLabel
+                    }!`,
                     variant: toastVariants.SUCCESS,
                 });
             })
