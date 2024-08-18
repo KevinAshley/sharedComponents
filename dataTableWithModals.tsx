@@ -26,11 +26,9 @@ interface DataTableWithModalsIf {
     selectedIds: number[];
     setSelectedIds: Dispatch<SetStateAction<number[]>>;
     deleteSelectedItems: Function;
-    addItem: () => Promise<any>;
-    editItem: () => Promise<any>;
+    addItem: (formValues: FormValuesIf) => Promise<any>;
+    editItem: (formValues: FormValuesIf) => Promise<any>;
     itemFormInputs: InputIf[];
-    formValues: FormValuesIf;
-    setFormValues: Dispatch<SetStateAction<FormValuesIf>>;
     loadItems: () => void;
 }
 
@@ -45,12 +43,11 @@ const DataTableWithModals = ({
     addItem,
     editItem,
     itemFormInputs,
-    formValues,
-    setFormValues,
     loadItems,
 }: DataTableWithModalsIf) => {
     const { setToast } = useContext(MainContext);
 
+    const [formValues, setFormValues] = useState<FormValuesIf>({});
     const [addingNew, setAddingNew] = useState(false);
     const [editingId, setEditingId] = useState<number | undefined>(undefined);
 
@@ -60,7 +57,7 @@ const DataTableWithModals = ({
     };
 
     const handleAddItem = () => {
-        addItem()
+        addItem(formValues)
             .then(() => {
                 setAddingNew(false);
                 loadItemsAndResetFormValues();
@@ -78,7 +75,7 @@ const DataTableWithModals = ({
     };
 
     const handleEditItem = () => {
-        editItem()
+        editItem(formValues)
             .then(() => {
                 setEditingId(undefined);
                 loadItemsAndResetFormValues();
