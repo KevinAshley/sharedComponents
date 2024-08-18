@@ -14,6 +14,7 @@ import IconButton from "@mui/material/IconButton";
 import { usePathname } from "next/navigation";
 import { SvgIconTypeMap } from "@mui/material/SvgIcon";
 import { OverridableComponent } from "@mui/material/OverridableComponent";
+import ListSubheader from "@mui/material/ListSubheader";
 
 interface RouteIf {
     label: string;
@@ -24,6 +25,7 @@ interface RouteIf {
 }
 
 export interface RouteGroupIf {
+    label?: string;
     routes: RouteIf[];
 }
 
@@ -70,38 +72,36 @@ const Navigator = ({ open, onClose, groupedRoutes }: NavigatorIf) => {
                     </IconButton>
                 </ListItem>
 
-                {groupedRoutes.map(({ routes }, categoryIndex) => (
+                {groupedRoutes.map(({ label, routes }, categoryIndex) => (
                     <Box key={categoryIndex}>
-                        <Divider sx={{ mb: 2 }} />
+                        {label && (
+                            <ListSubheader sx={{ background: "none" }}>
+                                {label}
+                            </ListSubheader>
+                        )}
 
                         {routes.map(({ label, icon, route }, routeIndex) => {
                             const Icon = icon;
                             const active = pathname === route;
                             return (
-                                <ListItem
-                                    disablePadding
+                                <ListItemButton
+                                    selected={active}
+                                    sx={{
+                                        py: "2px",
+                                        px: 3,
+                                    }}
+                                    component={Link}
+                                    href={route}
+                                    onClick={onClose}
                                     key={`route-${routeIndex}`}
                                 >
-                                    <ListItemButton
-                                        selected={active}
-                                        sx={{
-                                            py: "2px",
-                                            px: 3,
-                                        }}
-                                        component={Link}
-                                        href={route}
-                                        onClick={onClose}
-                                    >
-                                        <ListItemIcon>
-                                            <Icon />
-                                        </ListItemIcon>
-                                        <ListItemText>{label}</ListItemText>
-                                    </ListItemButton>
-                                </ListItem>
+                                    <ListItemIcon>
+                                        <Icon />
+                                    </ListItemIcon>
+                                    <ListItemText>{label}</ListItemText>
+                                </ListItemButton>
                             );
                         })}
-
-                        <Divider sx={{ mt: 2 }} />
                     </Box>
                 ))}
             </List>
