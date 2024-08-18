@@ -47,30 +47,15 @@ const Navigator = ({ open, onClose, groupedRoutes }: NavigatorIf) => {
             ModalProps={{
                 keepMounted: true,
             }}
+            anchor={"right"}
         >
             <List disablePadding>
-                <ListItem
-                    sx={{
-                        pt: "10px",
-                        pb: "10px",
-                        pr: "1rem",
-                    }}
-                >
-                    <IconButton
-                        sx={{
-                            ml: "auto",
-                            display: "inline-block",
-                            lineHeight: 0,
-                        }}
-                        onClick={onClose}
-                    >
-                        <CloseIcon
-                            sx={{
-                                fontSize: "1.25rem",
-                            }}
-                        />
+                <ListItem>
+                    <IconButton onClick={onClose}>
+                        <CloseIcon />
                     </IconButton>
                 </ListItem>
+                <Divider sx={{ mb: 2 }} />
 
                 {groupedRoutes.map(({ label, routes }, categoryIndex) => (
                     <Box key={categoryIndex}>

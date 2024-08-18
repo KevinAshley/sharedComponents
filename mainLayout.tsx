@@ -9,12 +9,14 @@ import {
     CssVarsTheme,
     Theme,
 } from "@mui/material/styles";
+import { StaticImageData } from "next/image";
 
 interface MainLayoutIf {
     children: ReactNode;
     theme: Omit<Theme, "palette" | "applyStyles"> & CssVarsTheme;
     groupedRoutes: RouteGroupIf[];
     websiteName: string;
+    websiteAvatar: StaticImageData;
 }
 
 export function MainLayout({
@@ -22,6 +24,7 @@ export function MainLayout({
     theme,
     groupedRoutes,
     websiteName,
+    websiteAvatar,
 }: MainLayoutIf) {
     return (
         <html lang="en" suppressHydrationWarning={true}>
@@ -31,6 +34,7 @@ export function MainLayout({
                         <PageWrapper
                             groupedRoutes={groupedRoutes}
                             websiteName={websiteName}
+                            websiteAvatar={websiteAvatar}
                         >
                             {children}
                         </PageWrapper>

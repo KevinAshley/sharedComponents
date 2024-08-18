@@ -7,13 +7,17 @@ import MenuIcon from "@mui/icons-material/Menu";
 import Toolbar from "@mui/material/Toolbar";
 import PaletteModeSwitch from "@/sharedComponents/paletteModeSwitch";
 import Navigator, { RouteGroupIf } from "@/sharedComponents/navigator";
+import Avatar from "@mui/material/Avatar";
+import Image, { StaticImageData } from "next/image";
 
 function Header({
     groupedRoutes,
     websiteName,
+    websiteAvatar,
 }: {
     groupedRoutes: RouteGroupIf[];
     websiteName: string;
+    websiteAvatar: StaticImageData;
 }) {
     const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -49,14 +53,18 @@ function Header({
                         })}
                     >
                         <Grid item>
-                            <IconButton
-                                color="inherit"
-                                aria-label="open drawer"
-                                onClick={handleDrawerToggle}
-                                edge="start"
+                            <Avatar
+                                sx={{
+                                    border: `3px solid var(--mui-palette-primary-dark)`,
+                                }}
                             >
-                                <MenuIcon />
-                            </IconButton>
+                                <Image
+                                    src={websiteAvatar}
+                                    alt="kevin gray sky"
+                                    width={40}
+                                    height={40}
+                                />
+                            </Avatar>
                         </Grid>
                         <Grid
                             sx={{
@@ -72,6 +80,16 @@ function Header({
                         <Grid item xs />
                         <Grid item>
                             <PaletteModeSwitch />
+                        </Grid>
+                        <Grid item>
+                            <IconButton
+                                color="inherit"
+                                aria-label="open drawer"
+                                onClick={handleDrawerToggle}
+                                edge="start"
+                            >
+                                <MenuIcon />
+                            </IconButton>
                         </Grid>
                     </Grid>
                 </Toolbar>
