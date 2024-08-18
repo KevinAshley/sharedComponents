@@ -25,6 +25,13 @@ import { visuallyHidden } from "@mui/utils";
 import moment from "moment";
 import { Dispatch, SetStateAction } from "react";
 
+export enum ColumnType {
+    TEXT = "text",
+    NUMBER = "number",
+    DATE = "date",
+    BOOLEAN = "boolean",
+}
+
 export type DataRow = {
     id: number;
     [key: string]: string | number | Date | boolean | null;
@@ -87,14 +94,13 @@ function stableSort<DataRow>(
 interface HeadCell {
     id: keyof DataRow;
     label: string;
-    numeric: boolean;
+    type: ColumnType;
 }
 
 export interface TableColumnIf {
     label: string;
     id: string;
-    numeric?: boolean;
-    date?: boolean;
+    type: ColumnType;
 }
 
 interface EnhancedTableHeadProps {
@@ -130,7 +136,7 @@ function EnhancedTableHead(props: EnhancedTableHeadProps) {
     const headCells: readonly HeadCell[] = tableColumns.map((thisColumn) => {
         return {
             id: thisColumn.id,
-            numeric: !!thisColumn.numeric,
+            type: thisColumn.type,
             disablePadding: true,
             label: thisColumn.label,
         };
@@ -155,7 +161,13 @@ function EnhancedTableHead(props: EnhancedTableHeadProps) {
                 {headCells.map((headCell) => (
                     <TableCell
                         key={headCell.id}
-                        align={headCell.numeric ? "right" : "left"}
+                        align={
+                            [ColumnType.DATE, ColumnType.NUMBER].includes(
+                                headCell.type
+                            )
+                                ? "right"
+                                : "left"
+                        }
                         sortDirection={orderBy === headCell.id ? order : false}
                     >
                         <TableSortLabel
@@ -242,6 +254,19 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
     );
 }
 
+const makeTableCellDisplayValue = ({
+    type,
+    value,
+}: {
+    type: ColumnType;
+    value: any;
+}) => {
+    if (type === ColumnType.DATE) {
+        return value ? moment(value).format("MMMM Do YYYY, h:mm:ss a") : "";
+    }
+    return value;
+};
+
 const DataTable = ({
     data,
     setAddNewOpen,
@@ -324,7 +349,7 @@ const DataTable = ({
         setDense(event.target.checked);
     };
 
-    const isSelected = (id: number) => selected.indexOf(id) !== -1;
+    const isSelected = (id: number) => selected.includes(id);
 
     // Avoid a layout jump when reaching the last page with empty rows.
     const emptyRows =
@@ -398,27 +423,11 @@ const DataTable = ({
                                                     <TableCell
                                                         key={thisColumnIndex}
                                                     >
-                                                        {thisColumn.date &&
-                                                        !!value ? (
-                                                            <>
-                                                                {moment(
-                                                                    typeof value !==
-                                                                        "boolean"
-                                                                        ? value
-                                                                        : ""
-                                                                ).format(
-                                                                    "MMMM Do YYYY, h:mm:ss a"
-                                                                )}
-                                                            </>
-                                                        ) : (
-                                                            <>
-                                                                {(
-                                                                    row[
-                                                                        thisColumn
-                                                                            .id
-                                                                    ] || ""
-                                                                ).toString()}
-                                                            </>
+                                                        {makeTableCellDisplayValue(
+                                                            {
+                                                                type: thisColumn.type,
+                                                                value,
+                                                            }
                                                         )}
                                                     </TableCell>
                                                 );
