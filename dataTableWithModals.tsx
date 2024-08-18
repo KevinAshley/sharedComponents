@@ -3,6 +3,8 @@ import React, {
     Fragment,
     SetStateAction,
     useContext,
+    useEffect,
+    useMemo,
     useState,
 } from "react";
 import DataTable, {
@@ -14,11 +16,7 @@ import {
     toastVariants,
 } from "@/sharedComponents/contexts/mainContext";
 import ModalForm from "@/sharedComponents/modalForm";
-import { InputIf } from "@/sharedComponents/form";
-
-interface FormValuesIf {
-    [key: string]: string | number | boolean;
-}
+import { FormValuesIf, InputIf } from "@/sharedComponents/form";
 
 interface DataTableWithModalsIf {
     tableHeading: string;
@@ -28,14 +26,12 @@ interface DataTableWithModalsIf {
     selectedIds: number[];
     setSelectedIds: Dispatch<SetStateAction<number[]>>;
     deleteSelectedItems: Function;
-    editingId: number | undefined;
-    setEditingId: Dispatch<SetStateAction<number | undefined>>;
     addItem: () => Promise<any>;
-    editItem: Function;
+    editItem: () => Promise<any>;
     itemFormInputs: InputIf[];
     formValues: FormValuesIf;
     setFormValues: Dispatch<SetStateAction<FormValuesIf>>;
-    reloadItems: () => void;
+    loadItems: () => void;
 }
 
 const DataTableWithModals = ({
@@ -46,24 +42,28 @@ const DataTableWithModals = ({
     selectedIds,
     setSelectedIds,
     deleteSelectedItems,
-    editingId,
-    setEditingId,
     addItem,
     editItem,
     itemFormInputs,
     formValues,
     setFormValues,
-    reloadItems,
+    loadItems,
 }: DataTableWithModalsIf) => {
     const { setToast } = useContext(MainContext);
 
     const [addingNew, setAddingNew] = useState(false);
+    const [editingId, setEditingId] = useState<number | undefined>(undefined);
+
+    const loadItemsAndResetFormValues = () => {
+        loadItems();
+        setFormValues({});
+    };
 
     const handleAddItem = () => {
         addItem()
             .then(() => {
                 setAddingNew(false);
-                reloadItems();
+                loadItemsAndResetFormValues();
                 setToast({
                     message: `Successfully added new ${singularItemLabel}!`,
                     variant: toastVariants.SUCCESS,
@@ -76,6 +76,43 @@ const DataTableWithModals = ({
                 });
             });
     };
+
+    const handleEditItem = () => {
+        editItem()
+            .then(() => {
+                setEditingId(undefined);
+                loadItemsAndResetFormValues();
+                setToast({
+                    message: `Successfully edited ${singularItemLabel}!`,
+                    variant: toastVariants.SUCCESS,
+                });
+            })
+            .catch((err) => {
+                setToast({
+                    message: err.message,
+                    variant: toastVariants.ERROR,
+                });
+            });
+    };
+
+    const handleCloseAddNewModal = () => {
+        setAddingNew(false);
+        setFormValues({});
+    };
+
+    const editingItem = useMemo(() => {
+        return editingId
+            ? items.find((item) => item.id == editingId)
+            : undefined;
+    }, [editingId, items]);
+
+    useEffect(() => {
+        if (editingItem) {
+            setFormValues(editingItem);
+        } else {
+            setFormValues({});
+        }
+    }, [editingItem]);
 
     return (
         <Fragment>
@@ -93,7 +130,7 @@ const DataTableWithModals = ({
             <ModalForm
                 title={`Add New ${singularItemLabel}`}
                 open={addingNew}
-                handleClose={() => setAddingNew(false)}
+                handleClose={handleCloseAddNewModal}
                 handleSubmit={handleAddItem}
                 inputs={itemFormInputs}
                 values={formValues}
@@ -103,7 +140,7 @@ const DataTableWithModals = ({
                 title={`Edit ${singularItemLabel}`}
                 open={!!editingId}
                 handleClose={() => setEditingId(undefined)}
-                handleSubmit={editItem}
+                handleSubmit={handleEditItem}
                 inputs={itemFormInputs}
                 values={formValues}
                 setValues={setFormValues}

@@ -19,10 +19,14 @@ export interface InputIf {
     required?: boolean;
 }
 
+export interface FormValuesIf {
+    [key: string]: string | number | Date | boolean | null;
+}
+
 export interface FormIf {
     inputs: InputIf[];
     handleSubmit: Function;
-    values: { [key: string]: string | number | boolean };
+    values: FormValuesIf;
     setValues: Function;
     noSubmitButton?: boolean;
     processing?: boolean;
