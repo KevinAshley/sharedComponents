@@ -4,6 +4,8 @@ import React, {
     useState,
     FormEvent,
     useImperativeHandle,
+    SetStateAction,
+    Dispatch,
 } from "react";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
@@ -28,7 +30,7 @@ export interface FormIf {
     inputs: InputIf[];
     handleSubmit: Function;
     values: FormValuesIf;
-    setValues: Function;
+    setValues: Dispatch<SetStateAction<FormValuesIf>>;
     noSubmitButton?: boolean;
     processing?: boolean;
 }
@@ -95,9 +97,14 @@ const Form = React.forwardRef(
                         const handleChange = (
                             e: React.ChangeEvent<HTMLInputElement>
                         ) => {
-                            setValues({
-                                ...values,
-                                [id]: e.target.value,
+                            setValues((previousValues) => {
+                                return {
+                                    ...previousValues,
+                                    [id]:
+                                        type === "checkbox"
+                                            ? !previousValues[id]
+                                            : e.target.value,
+                                };
                             });
                         };
                         return (
@@ -106,7 +113,7 @@ const Form = React.forwardRef(
                                     <FormControlLabel
                                         control={
                                             <Checkbox
-                                                value={value}
+                                                checked={!!value}
                                                 onChange={handleChange}
                                             />
                                         }

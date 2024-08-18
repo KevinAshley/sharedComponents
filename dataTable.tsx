@@ -24,6 +24,8 @@ import EditIcon from "@mui/icons-material/Edit";
 import { visuallyHidden } from "@mui/utils";
 import moment from "moment";
 import { Dispatch, SetStateAction } from "react";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import RadioButtonUncheckedIcon from "@mui/icons-material/RadioButtonUnchecked";
 
 export enum ColumnType {
     TEXT = "text",
@@ -169,6 +171,11 @@ function EnhancedTableHead(props: EnhancedTableHeadProps) {
                                 : "left"
                         }
                         sortDirection={orderBy === headCell.id ? order : false}
+                        padding={
+                            headCell.type == ColumnType.BOOLEAN
+                                ? "checkbox"
+                                : undefined
+                        }
                     >
                         <TableSortLabel
                             active={orderBy === headCell.id}
@@ -263,6 +270,13 @@ const makeTableCellDisplayValue = ({
 }) => {
     if (type === ColumnType.DATE) {
         return value ? moment(value).format("MMMM Do YYYY, h:mm:ss a") : "";
+    }
+    if (type === ColumnType.BOOLEAN) {
+        return !!value ? (
+            <CheckCircleIcon fontSize={"small"} />
+        ) : (
+            <RadioButtonUncheckedIcon fontSize={"small"} />
+        );
     }
     return value;
 };
@@ -422,6 +436,12 @@ const DataTable = ({
                                                 return (
                                                     <TableCell
                                                         key={thisColumnIndex}
+                                                        padding={
+                                                            thisColumn.type ==
+                                                            ColumnType.BOOLEAN
+                                                                ? "checkbox"
+                                                                : undefined
+                                                        }
                                                     >
                                                         {makeTableCellDisplayValue(
                                                             {
