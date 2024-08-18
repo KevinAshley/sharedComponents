@@ -512,23 +512,19 @@ const DataTable = ({
                                                 align={"right"}
                                                 padding={"checkbox"}
                                             >
-                                                <Tooltip title="Edit">
-                                                    <IconButton
-                                                        onClick={() => {
-                                                            setEditingId(
-                                                                row.id
-                                                            );
-                                                        }}
-                                                        sx={{
-                                                            marginRight: "8px",
-                                                        }}
-                                                        disabled={loading}
-                                                    >
-                                                        <EditIcon
-                                                            fontSize={"small"}
-                                                        />
-                                                    </IconButton>
-                                                </Tooltip>
+                                                <IconButton
+                                                    onClick={() => {
+                                                        setEditingId(row.id);
+                                                    }}
+                                                    sx={{
+                                                        marginRight: "8px",
+                                                    }}
+                                                    disabled={loading}
+                                                >
+                                                    <EditIcon
+                                                        fontSize={"small"}
+                                                    />
+                                                </IconButton>
                                             </TableCell>
                                         )}
                                     </TableRow>

@@ -67,6 +67,8 @@ const DataTableWithModals = ({
 }: DataTableWithModalsIf) => {
     const { setToast } = useContext(MainContext);
     const [loading, setLoading] = useState(true);
+    const [processing, setProcessing] = useState(false);
+
     const [initialized, setInitialized] = useState(false);
     const [items, setItems] = useState<DataRow[]>([]);
 
@@ -99,6 +101,7 @@ const DataTableWithModals = ({
     }, [initialized, loadItems]);
 
     const handleAddItem = () => {
+        setProcessing(true);
         addItem(formValues)
             .then(() => {
                 handleCloseAddNewModal();
@@ -113,10 +116,14 @@ const DataTableWithModals = ({
                     message: err.message,
                     variant: toastVariants.ERROR,
                 });
+            })
+            .finally(() => {
+                setProcessing(false);
             });
     };
 
     const handleEditItem = () => {
+        setProcessing(true);
         editItem(formValues)
             .then(() => {
                 handleCloseEditingModal();
@@ -131,10 +138,14 @@ const DataTableWithModals = ({
                     message: err.message,
                     variant: toastVariants.ERROR,
                 });
+            })
+            .finally(() => {
+                setProcessing(false);
             });
     };
 
     const handleDeleteItems = () => {
+        setProcessing(true);
         const deletionCount = selectedIds.length;
         deleteSelectedItems(selectedIds)
             .then(() => {
@@ -155,6 +166,9 @@ const DataTableWithModals = ({
                     message: err.message,
                     variant: toastVariants.ERROR,
                 });
+            })
+            .finally(() => {
+                setProcessing(false);
             });
     };
 
@@ -207,6 +221,7 @@ const DataTableWithModals = ({
                 inputs={itemFormInputs}
                 values={formValues}
                 setValues={setFormValues}
+                processing={processing}
             />
             <ModalForm
                 title={`Edit ${singularItemLabel}`}
@@ -216,6 +231,7 @@ const DataTableWithModals = ({
                 inputs={itemFormInputs}
                 values={formValues}
                 setValues={setFormValues}
+                processing={processing}
             />
             <ModalForm
                 title={`Delete ${getItemsCountWithSuffix({
@@ -229,6 +245,7 @@ const DataTableWithModals = ({
                 inputs={deleteFormInputs}
                 values={deleteFormValues}
                 setValues={setDeleteFormValues}
+                processing={processing}
             />
         </Fragment>
     );
