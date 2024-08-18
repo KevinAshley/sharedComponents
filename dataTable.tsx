@@ -3,7 +3,7 @@ import { alpha } from "@mui/material/styles";
 import Box from "@mui/material/Box";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
+import TableCell, { TableCellProps } from "@mui/material/TableCell";
 import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
@@ -23,9 +23,11 @@ import AddCircle from "@mui/icons-material/AddCircle";
 import EditIcon from "@mui/icons-material/Edit";
 import { visuallyHidden } from "@mui/utils";
 import moment from "moment";
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, Fragment, SetStateAction } from "react";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import RadioButtonUncheckedIcon from "@mui/icons-material/RadioButtonUnchecked";
+import Skeleton from "@mui/material/Skeleton";
+import CircularProgress from "@mui/material/CircularProgress";
 
 export enum ColumnType {
     TEXT = "text",
@@ -117,6 +119,7 @@ interface EnhancedTableHeadProps {
     rowCount: number;
     tableColumns: TableColumnIf[];
     withActions: boolean;
+    loading: boolean;
 }
 
 function EnhancedTableHead(props: EnhancedTableHeadProps) {
@@ -129,6 +132,7 @@ function EnhancedTableHead(props: EnhancedTableHeadProps) {
         onRequestSort,
         tableColumns,
         withActions,
+        loading,
     } = props;
     const createSortHandler =
         (property: keyof DataRow) => (event: React.MouseEvent<unknown>) => {
@@ -158,6 +162,7 @@ function EnhancedTableHead(props: EnhancedTableHeadProps) {
                         inputProps={{
                             "aria-label": "select all desserts",
                         }}
+                        disabled={loading}
                     />
                 </TableCell>
                 {headCells.map((headCell) => (
@@ -181,6 +186,7 @@ function EnhancedTableHead(props: EnhancedTableHeadProps) {
                             active={orderBy === headCell.id}
                             direction={orderBy === headCell.id ? order : "asc"}
                             onClick={createSortHandler(headCell.id)}
+                            disabled={loading}
                         >
                             {headCell.label}
                             {orderBy === headCell.id ? (
@@ -204,10 +210,12 @@ interface EnhancedTableToolbarProps {
     setAddNewOpen: Function;
     title: string;
     deleteSelected: Function;
+    loading: boolean;
 }
 
 function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
-    const { numSelected, setAddNewOpen, title, deleteSelected } = props;
+    const { numSelected, setAddNewOpen, title, deleteSelected, loading } =
+        props;
     const handleDeleteClick = () => {
         deleteSelected();
     };
@@ -244,18 +252,32 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
                     {title}
                 </Typography>
             )}
-            {numSelected > 0 ? (
-                <Tooltip title="Delete">
-                    <IconButton onClick={handleDeleteClick}>
-                        <DeleteIcon />
-                    </IconButton>
-                </Tooltip>
+            {loading ? (
+                <IconButton disabled={true}>
+                    <CircularProgress size={20} disableShrink={true} />
+                </IconButton>
             ) : (
-                <Tooltip title="Add New">
-                    <IconButton onClick={() => setAddNewOpen(true)}>
-                        <AddCircle />
-                    </IconButton>
-                </Tooltip>
+                <Fragment>
+                    {numSelected > 0 ? (
+                        <Tooltip title="Delete">
+                            <IconButton
+                                onClick={handleDeleteClick}
+                                disabled={loading}
+                            >
+                                <DeleteIcon />
+                            </IconButton>
+                        </Tooltip>
+                    ) : (
+                        <Tooltip title="Add New">
+                            <IconButton
+                                onClick={() => setAddNewOpen(true)}
+                                disabled={loading}
+                            >
+                                <AddCircle />
+                            </IconButton>
+                        </Tooltip>
+                    )}
+                </Fragment>
             )}
         </Toolbar>
     );
@@ -281,6 +303,22 @@ const makeTableCellDisplayValue = ({
     return value;
 };
 
+interface TableBodyCellIf extends TableCellProps {
+    displaySkeleton: boolean;
+}
+
+const TableBodyCell = (props: TableBodyCellIf) => {
+    const { displaySkeleton, ...otherProps } = props;
+    if (displaySkeleton) {
+        return (
+            <TableCell>
+                <Skeleton />
+            </TableCell>
+        );
+    }
+    return <TableCell {...otherProps} />;
+};
+
 const DataTable = ({
     data,
     setAddNewOpen,
@@ -291,6 +329,7 @@ const DataTable = ({
     deleteSelected,
     tableColumns,
     setEditingId,
+    loading,
 }: {
     data: DataRow[];
     setAddNewOpen: Function;
@@ -301,6 +340,7 @@ const DataTable = ({
     deleteSelected: Function;
     tableColumns: TableColumnIf[];
     setEditingId?: Dispatch<SetStateAction<number | undefined>>;
+    loading: boolean;
 }) => {
     const [order, setOrder] = React.useState<Order>("asc");
     const [orderBy, setOrderBy] = React.useState<keyof DataRow>(defaultOrderBy);
@@ -369,13 +409,19 @@ const DataTable = ({
     const emptyRows =
         page > 0 ? Math.max(0, (1 + page) * rowsPerPage - data.length) : 0;
 
-    const visibleRows = React.useMemo(
+    const visibleRows: DataRow[] = React.useMemo(
         () =>
-            stableSort(data, getComparator(order, orderBy)).slice(
-                page * rowsPerPage,
-                page * rowsPerPage + rowsPerPage
-            ),
-        [data, order, orderBy, page, rowsPerPage]
+            loading && !data.length
+                ? Array.from(Array(4)).map((p, placeholderIndex) => {
+                      return {
+                          id: placeholderIndex,
+                      };
+                  })
+                : stableSort(data, getComparator(order, orderBy)).slice(
+                      page * rowsPerPage,
+                      page * rowsPerPage + rowsPerPage
+                  ),
+        [data, order, orderBy, page, rowsPerPage, loading]
     );
 
     return (
@@ -386,6 +432,7 @@ const DataTable = ({
                     setAddNewOpen={setAddNewOpen}
                     title={title}
                     deleteSelected={deleteSelected}
+                    loading={loading}
                 />
                 <TableContainer>
                     <Table
@@ -402,7 +449,9 @@ const DataTable = ({
                             rowCount={data.length}
                             tableColumns={tableColumns}
                             withActions={!!setEditingId}
+                            loading={loading}
                         />
+
                         <TableBody>
                             {visibleRows.map((row, index) => {
                                 const isItemSelected = isSelected(row.id);
@@ -410,7 +459,7 @@ const DataTable = ({
 
                                 return (
                                     <TableRow
-                                        hover
+                                        hover={!loading}
                                         role="checkbox"
                                         aria-checked={isItemSelected}
                                         tabIndex={-1}
@@ -427,6 +476,7 @@ const DataTable = ({
                                                 onClick={(event) =>
                                                     handleClick(event, row.id)
                                                 }
+                                                disabled={loading}
                                             />
                                         </TableCell>
                                         {tableColumns.map(
@@ -434,13 +484,17 @@ const DataTable = ({
                                                 const value =
                                                     row[thisColumn.id];
                                                 return (
-                                                    <TableCell
+                                                    <TableBodyCell
                                                         key={thisColumnIndex}
                                                         padding={
                                                             thisColumn.type ==
                                                             ColumnType.BOOLEAN
                                                                 ? "checkbox"
                                                                 : undefined
+                                                        }
+                                                        displaySkeleton={
+                                                            loading &&
+                                                            !data.length
                                                         }
                                                     >
                                                         {makeTableCellDisplayValue(
@@ -449,7 +503,7 @@ const DataTable = ({
                                                                 value,
                                                             }
                                                         )}
-                                                    </TableCell>
+                                                    </TableBodyCell>
                                                 );
                                             }
                                         )}
@@ -468,6 +522,7 @@ const DataTable = ({
                                                         sx={{
                                                             marginRight: "8px",
                                                         }}
+                                                        disabled={loading}
                                                     >
                                                         <EditIcon
                                                             fontSize={"small"}
@@ -499,6 +554,7 @@ const DataTable = ({
                     page={page}
                     onPageChange={handleChangePage}
                     onRowsPerPageChange={handleChangeRowsPerPage}
+                    disabled={loading}
                 />
             </Paper>
             <FormControlLabel

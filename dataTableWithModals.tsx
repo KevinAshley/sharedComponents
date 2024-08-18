@@ -66,7 +66,7 @@ const DataTableWithModals = ({
     itemFormInputs,
 }: DataTableWithModalsIf) => {
     const { setToast } = useContext(MainContext);
-
+    const [loading, setLoading] = useState(true);
     const [initialized, setInitialized] = useState(false);
     const [items, setItems] = useState<DataRow[]>([]);
 
@@ -79,6 +79,7 @@ const DataTableWithModals = ({
     const [deleting, setDeleting] = useState(false);
 
     const loadItems = useCallback(() => {
+        setLoading(true);
         getItems()
             .then(setItems)
             .catch((err) => {
@@ -86,7 +87,8 @@ const DataTableWithModals = ({
                     message: err.message,
                     variant: toastVariants.ERROR,
                 });
-            });
+            })
+            .finally(() => setLoading(false));
     }, [getItems, setToast]);
 
     useEffect(() => {
@@ -195,6 +197,7 @@ const DataTableWithModals = ({
                 tableColumns={tableColumns}
                 defaultOrderBy={"id"}
                 setEditingId={setEditingId}
+                loading={loading}
             />
             <ModalForm
                 title={`Add New ${singularItemLabel}`}
