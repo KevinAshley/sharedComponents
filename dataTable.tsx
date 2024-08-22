@@ -436,7 +436,6 @@ const DataTable = ({
                 />
                 <TableContainer>
                     <Table
-                        sx={{ minWidth: 750 }}
                         aria-labelledby="tableTitle"
                         size={dense ? "small" : "medium"}
                     >

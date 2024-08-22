@@ -9,6 +9,7 @@ import PaletteModeSwitch from "@/sharedComponents/paletteModeSwitch";
 import Navigator, { RouteGroupIf } from "@/sharedComponents/navigator";
 import Avatar from "@mui/material/Avatar";
 import Image, { StaticImageData } from "next/image";
+import Container from "@mui/material/Container";
 
 function Header({
     groupedRoutes,
@@ -38,60 +39,59 @@ function Header({
                 position="sticky"
                 elevation={0}
             >
-                <Toolbar sx={{ pb: "8px" }}>
-                    <Grid
-                        container
-                        maxWidth="md"
-                        spacing={1}
-                        alignItems="center"
+                <Toolbar disableGutters={true}>
+                    <Container
                         sx={(theme) => ({
-                            margin: "auto",
-                            maxWidth: "md",
+                            [theme.breakpoints.up("md")]: {
+                                maxWidth: "md",
+                            },
                             [theme.breakpoints.up("lg")]: {
                                 maxWidth: "lg",
                             },
                         })}
                     >
-                        <Grid item>
-                            <Avatar
+                        <Grid container spacing={2} alignItems="center">
+                            <Grid item>
+                                <Avatar
+                                    sx={{
+                                        border: `3px solid var(--mui-palette-primary-dark)`,
+                                    }}
+                                >
+                                    <Image
+                                        src={websiteAvatar}
+                                        alt="kevin gray sky"
+                                        width={40}
+                                        height={40}
+                                    />
+                                </Avatar>
+                            </Grid>
+                            <Grid
                                 sx={{
-                                    border: `3px solid var(--mui-palette-primary-dark)`,
+                                    display: {
+                                        // textTransform: "uppercase",
+                                        fontFamily: "monospace",
+                                    },
                                 }}
+                                item
                             >
-                                <Image
-                                    src={websiteAvatar}
-                                    alt="kevin gray sky"
-                                    width={40}
-                                    height={40}
-                                />
-                            </Avatar>
+                                {websiteName}
+                            </Grid>
+                            <Grid item xs />
+                            <Grid item>
+                                <PaletteModeSwitch />
+                            </Grid>
+                            <Grid item>
+                                <IconButton
+                                    color="inherit"
+                                    aria-label="open drawer"
+                                    onClick={handleDrawerToggle}
+                                    edge="start"
+                                >
+                                    <MenuIcon />
+                                </IconButton>
+                            </Grid>
                         </Grid>
-                        <Grid
-                            sx={{
-                                display: {
-                                    // textTransform: "uppercase",
-                                    fontFamily: "monospace",
-                                },
-                            }}
-                            item
-                        >
-                            {websiteName}
-                        </Grid>
-                        <Grid item xs />
-                        <Grid item>
-                            <PaletteModeSwitch />
-                        </Grid>
-                        <Grid item>
-                            <IconButton
-                                color="inherit"
-                                aria-label="open drawer"
-                                onClick={handleDrawerToggle}
-                                edge="start"
-                            >
-                                <MenuIcon />
-                            </IconButton>
-                        </Grid>
-                    </Grid>
+                    </Container>
                 </Toolbar>
             </AppBar>
         </React.Fragment>
