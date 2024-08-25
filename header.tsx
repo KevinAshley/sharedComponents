@@ -10,6 +10,7 @@ import Navigator, { RouteGroupIf } from "@/sharedComponents/navigator";
 import Avatar from "@mui/material/Avatar";
 import Image, { StaticImageData } from "next/image";
 import Container from "@mui/material/Container";
+import LoginAvatar from "./loginAvatar";
 
 function Header({
     groupedRoutes,
@@ -79,6 +80,9 @@ function Header({
                             <Grid item xs />
                             <Grid item>
                                 <PaletteModeSwitch />
+                            </Grid>
+                            <Grid item>
+                                <LoginAvatar />
                             </Grid>
                             <Grid item>
                                 <IconButton
