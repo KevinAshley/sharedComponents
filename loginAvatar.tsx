@@ -20,15 +20,7 @@ const LoginAvatar = () => {
 
     return (
         <Fragment>
-            <IconButton
-                color={"inherit"}
-                // sx={{
-                //     color: "var(--mui-palette-primary-dark)",
-                //     padding: "2px",
-                //     background: "white",
-                // }}
-                onClick={toggleDialog}
-            >
+            <IconButton color={"inherit"} onClick={toggleDialog} edge="start">
                 <AccountCircleIcon />
             </IconButton>
             <Dialog open={dialogIsOpen} onClose={toggleDialog}>
