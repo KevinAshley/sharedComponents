@@ -4,6 +4,7 @@ import React, { Fragment, useState } from "react";
 import IconButton from "@mui/material/IconButton";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import ModalForm from "@/sharedComponents/modalForm";
+import { FormValuesIf } from "@/sharedComponents/form";
 
 const loginFormInputs = [
     {
@@ -24,9 +25,16 @@ const loginFormInputs = [
     },
 ];
 
+const defaultFormValues = {
+    email: "",
+    password: "",
+    verify: false,
+};
+
 const LoginAvatar = () => {
     const [dialogIsOpen, setDialogIsOpen] = useState(false);
-    const [formValues, setFormValues] = useState({});
+    const [formValues, setFormValues] =
+        useState<FormValuesIf>(defaultFormValues);
     const toggleDialog = () => {
         setDialogIsOpen(!dialogIsOpen);
     };
@@ -44,6 +52,7 @@ const LoginAvatar = () => {
                 inputs={loginFormInputs}
                 values={formValues}
                 setValues={setFormValues}
+                defaultValues={defaultFormValues}
                 processing={false}
             />
         </Fragment>

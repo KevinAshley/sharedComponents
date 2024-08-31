@@ -1,11 +1,12 @@
 import { useRef, Ref, Fragment } from "react";
 import Modal from "./modal";
-import Form, { FormIf } from "./form";
+import Form, { FormIf, FormValuesIf } from "./form";
 
 interface ModalFormIf extends FormIf {
     title: string;
     open: boolean;
     handleClose: () => void;
+    defaultValues?: FormValuesIf;
 }
 
 const ModalForm = ({
@@ -16,6 +17,7 @@ const ModalForm = ({
     inputs,
     values,
     setValues,
+    defaultValues,
     processing,
 }: ModalFormIf) => {
     const initialValues = useRef(values);
@@ -39,7 +41,7 @@ const ModalForm = ({
 
     const handleCloseAndResetValues = () => {
         handleClose();
-        setValues({});
+        setValues(defaultValues || {});
     };
 
     return (

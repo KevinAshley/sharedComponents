@@ -19,7 +19,7 @@ export interface InputIf {
     label: string;
     id: string;
     required?: boolean;
-    autoComplete?: "off";
+    autoComplete?: boolean;
 }
 
 export interface FormValuesIf {
@@ -129,7 +129,9 @@ const Form = React.forwardRef(
                                         name={id}
                                         value={value || ""}
                                         required={required}
-                                        autoComplete={autoComplete}
+                                        autoComplete={
+                                            autoComplete ? undefined : "off"
+                                        }
                                         onChange={handleChange}
                                         fullWidth={true}
                                         disabled={processing}
