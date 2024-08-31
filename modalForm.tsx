@@ -1,4 +1,4 @@
-import { useRef, Ref } from "react";
+import { useRef, Ref, Fragment } from "react";
 import Modal from "./modal";
 import Form, { FormIf } from "./form";
 
@@ -64,4 +64,10 @@ const ModalForm = ({
     );
 };
 
-export default ModalForm;
+const ModalFormWrapper = (props: ModalFormIf) => {
+    const { open } = props;
+    // no need to mount this until opened
+    return <Fragment>{open && <ModalForm {...props} />}</Fragment>;
+};
+
+export default ModalFormWrapper;

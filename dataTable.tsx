@@ -339,7 +339,7 @@ const DataTable = ({
     setSelected: Function;
     deleteSelected: Function;
     tableColumns: TableColumnIf[];
-    setEditingId?: Dispatch<SetStateAction<number | undefined>>;
+    setEditingId?: (newId: number | undefined) => void;
     loading: boolean;
 }) => {
     const [order, setOrder] = React.useState<Order>("asc");

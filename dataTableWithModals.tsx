@@ -187,17 +187,13 @@ const DataTableWithModals = ({
         setDeleteFormValues({});
     };
 
-    const editingItem = useMemo(() => {
-        return editingId
-            ? items.find((item) => item.id == editingId)
+    const setEditingIdAndInitializeForm = (newId: number | undefined) => {
+        const editingItem = newId
+            ? items.find((item) => item.id == newId)
             : undefined;
-    }, [editingId, items]);
-
-    useEffect(() => {
-        if (editingItem) {
-            setFormValues(editingItem);
-        }
-    }, [editingItem]);
+        setFormValues(editingItem || {});
+        setEditingId(newId);
+    };
 
     return (
         <Fragment>
@@ -210,7 +206,7 @@ const DataTableWithModals = ({
                 deleteSelected={() => setDeleting(true)}
                 tableColumns={tableColumns}
                 defaultOrderBy={"id"}
-                setEditingId={setEditingId}
+                setEditingId={setEditingIdAndInitializeForm}
                 loading={loading}
             />
             <ModalForm
