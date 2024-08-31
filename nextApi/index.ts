@@ -56,7 +56,7 @@ export const apiFetchWrapper = ({
     })
         .then((r) => r.json())
         .then((response) => {
-            console.log("hey", response);
+            console.log("apiFetchWrapper response: ", response);
             if (response.error) {
                 throw new Error(response.error);
             }
