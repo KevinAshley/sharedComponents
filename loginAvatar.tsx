@@ -2,18 +2,31 @@
 
 import React, { Fragment, useState } from "react";
 import IconButton from "@mui/material/IconButton";
-import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
-import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
-import DialogTitle from "@mui/material/DialogTitle";
-import Button from "@mui/material/Button";
-import Box from "@mui/material/Box";
-import Typography from "@mui/material/Typography";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import ModalForm from "@/sharedComponents/modalForm";
+
+const loginFormInputs = [
+    {
+        id: "email",
+        label: "Email",
+        type: "email",
+    },
+    {
+        id: "password",
+        label: "Password",
+        type: "password",
+    },
+    {
+        id: "verify",
+        label: "I am not a robot",
+        type: "checkbox",
+        required: true,
+    },
+];
 
 const LoginAvatar = () => {
     const [dialogIsOpen, setDialogIsOpen] = useState(false);
+    const [formValues, setFormValues] = useState({});
     const toggleDialog = () => {
         setDialogIsOpen(!dialogIsOpen);
     };
@@ -23,27 +36,16 @@ const LoginAvatar = () => {
             <IconButton color={"inherit"} onClick={toggleDialog} edge="start">
                 <AccountCircleIcon />
             </IconButton>
-            <Dialog open={dialogIsOpen} onClose={toggleDialog}>
-                <DialogTitle>Log In</DialogTitle>
-                <DialogContent sx={{ textAlign: "center" }}>
-                    <Box sx={{ fontSize: "3rem" }}>🏗️</Box>
-                    <Typography
-                        component="p"
-                        sx={{
-                            fontSize: "10px",
-                            marginBottom: "2rem",
-                        }}
-                    >
-                        Under Construction.
-                    </Typography>
-                    <DialogContentText>
-                        Authentication UI coming soon!
-                    </DialogContentText>
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={toggleDialog}>Close</Button>
-                </DialogActions>
-            </Dialog>
+            <ModalForm
+                title={`Log In`}
+                open={!!dialogIsOpen}
+                handleClose={() => setDialogIsOpen(false)}
+                handleSubmit={() => {}}
+                inputs={loginFormInputs}
+                values={formValues}
+                setValues={setFormValues}
+                processing={false}
+            />
         </Fragment>
     );
 };
