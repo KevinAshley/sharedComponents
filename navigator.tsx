@@ -18,7 +18,7 @@ import ListSubheader from "@mui/material/ListSubheader";
 
 interface RouteIf {
     label: string;
-    route: string;
+    path: string;
     icon: OverridableComponent<SvgIconTypeMap<{}, "svg">>;
     // allow additional props
     [x: string]: unknown;
@@ -65,9 +65,9 @@ const Navigator = ({ open, onClose, groupedRoutes }: NavigatorIf) => {
                             </ListSubheader>
                         )}
 
-                        {routes.map(({ label, icon, route }, routeIndex) => {
+                        {routes.map(({ label, icon, path }, routeIndex) => {
                             const Icon = icon;
-                            const active = pathname === route;
+                            const active = pathname === path;
                             return (
                                 <ListItemButton
                                     selected={active}
@@ -76,7 +76,7 @@ const Navigator = ({ open, onClose, groupedRoutes }: NavigatorIf) => {
                                         px: 3,
                                     }}
                                     component={Link}
-                                    href={route}
+                                    href={path}
                                     onClick={onClose}
                                     key={`route-${routeIndex}`}
                                 >
