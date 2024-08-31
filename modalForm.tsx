@@ -18,6 +18,7 @@ const ModalForm = ({
     setValues,
     processing,
 }: ModalFormIf) => {
+    const initialValues = useRef(values);
     const formRef = useRef<any>();
     const handleSubmitFromModalButton = () => {
         //// handle submit externally
@@ -25,13 +26,30 @@ const ModalForm = ({
             formRef.current.submitTheForm();
         }
     };
+
+    const changesPending = Object.entries(values).reduce(
+        (accumulator, [key, value]) => {
+            if (initialValues.current[key] != value) {
+                accumulator = true;
+            }
+            return accumulator;
+        },
+        false
+    );
+
+    const handleCloseAndResetValues = () => {
+        handleClose();
+        setValues({});
+    };
+
     return (
         <Modal
             title={title}
             open={open}
-            handleClose={handleClose}
+            handleClose={handleCloseAndResetValues}
             handleSubmit={handleSubmitFromModalButton}
             processing={processing}
+            disabled={!changesPending}
         >
             <Form
                 inputs={inputs}
