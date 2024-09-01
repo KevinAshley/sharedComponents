@@ -1,6 +1,7 @@
-import { useRef, Ref, Fragment } from "react";
+import { useRef, Ref, Fragment, useMemo } from "react";
 import Modal from "./modal";
 import Form, { FormIf, FormValuesIf } from "./form";
+import { getChangedFormValues } from "@/sharedComponents/utilities";
 
 export interface ModalFormIf extends FormIf {
     title: string;
@@ -29,15 +30,14 @@ const ModalFormInner = ({
         }
     };
 
-    const changesPending = Object.entries(values).reduce(
-        (accumulator, [key, value]) => {
-            if (initialValues.current[key] != value) {
-                accumulator = true;
-            }
-            return accumulator;
-        },
-        false
-    );
+    const changesPending = useMemo(() => {
+        return !!Object.keys(
+            getChangedFormValues({
+                values,
+                initialValues: initialValues.current,
+            })
+        ).length;
+    }, [values]);
 
     const handleCloseAndResetValues = () => {
         handleClose();
@@ -61,6 +61,7 @@ const ModalFormInner = ({
                 noSubmitButton={true}
                 ref={formRef}
                 processing={processing}
+                submitDisabled={!changesPending}
             />
         </Modal>
     );

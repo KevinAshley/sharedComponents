@@ -16,8 +16,7 @@ import {
     MainContext,
     ToastVariant,
 } from "@/sharedComponents/contexts/mainContext";
-import ModalForm from "@/sharedComponents/modalForm";
-import UncontrolledModalForm from "./modalFormUncontrolled";
+import UncontrolledModalForm from "@/sharedComponents/modalFormUncontrolled";
 import { FormValuesIf, InputIf } from "@/sharedComponents/form";
 
 const getItemsCountWithSuffix = ({
@@ -223,6 +222,7 @@ const DataTableWithModals = ({
                 inputs={itemFormInputs}
                 processing={processing}
                 initialValues={editingItem}
+                submitChangesOnly={true}
             />
             <UncontrolledModalForm
                 title={`Delete ${getItemsCountWithSuffix({

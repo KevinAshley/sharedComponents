@@ -6,6 +6,7 @@ import React, {
     useImperativeHandle,
     SetStateAction,
     Dispatch,
+    useMemo,
 } from "react";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
@@ -13,6 +14,7 @@ import Button from "@mui/material/Button";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 import CircularProgress from "@mui/material/CircularProgress";
+import { getChangedFormValues } from "@/sharedComponents/utilities";
 
 export interface InputIf {
     type: string;
@@ -33,7 +35,13 @@ export interface FormIf {
     setValues: Dispatch<SetStateAction<FormValuesIf>>;
     noSubmitButton?: boolean;
     processing?: boolean;
+    submitDisabled?: boolean;
+    submitChangesOnly?: boolean;
 }
+
+const getRandomNumberString = () => {
+    return Math.floor(Math.random() * 100000).toString();
+};
 
 const Form = React.forwardRef(
     (
@@ -44,14 +52,24 @@ const Form = React.forwardRef(
             setValues,
             noSubmitButton,
             processing,
+            submitDisabled,
+            submitChangesOnly,
         }: FormIf,
         ref: Ref<{ submitTheForm: () => void }>
     ) => {
+        const initialValues = useRef(values);
+
         const [hpCheckboxIsChecked, setHpCheckboxIsChecked] = useState(false);
-        const randomNumberString = Math.floor(
-            Math.random() * 100000
-        ).toString();
+        const randomNumberString = useMemo(() => getRandomNumberString(), []);
         const formRef = useRef<any>();
+
+        const changedValues = useMemo(() => {
+            return getChangedFormValues({
+                values,
+                initialValues: initialValues.current,
+            });
+        }, [values]);
+
         const handleChangeHpInput = () => {
             setHpCheckboxIsChecked(!hpCheckboxIsChecked);
         };
@@ -63,7 +81,7 @@ const Form = React.forwardRef(
 
         const handleSubmitWrapped = (e: FormEvent) => {
             e.preventDefault();
-            handleSubmit(values);
+            handleSubmit(submitChangesOnly ? changedValues : values);
         };
 
         useImperativeHandle(ref, () => ({
@@ -154,18 +172,19 @@ const Form = React.forwardRef(
                             onChange={handleChangeHpInput}
                         />
                     </Box>
-                    {!noSubmitButton && (
-                        <Box>
-                            <Button
-                                type={"submit"}
-                                variant={"contained"}
-                                sx={{ width: "100%" }}
-                                disabled={processing}
-                            >
-                                Submit
-                            </Button>
-                        </Box>
-                    )}
+                    <Box
+                        sx={noSubmitButton ? { display: "none" } : undefined}
+                        // we need the submit button here always so that the enter key submits the form
+                    >
+                        <Button
+                            type={"submit"}
+                            variant={"contained"}
+                            sx={{ width: "100%" }}
+                            disabled={submitDisabled || processing}
+                        >
+                            Submit
+                        </Button>
+                    </Box>
                 </Box>
                 {processing && (
                     <Box
