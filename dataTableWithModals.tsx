@@ -17,6 +17,7 @@ import {
     ToastVariant,
 } from "@/sharedComponents/contexts/mainContext";
 import ModalForm from "@/sharedComponents/modalForm";
+import UncontrolledModalForm from "./modalFormUncontrolled";
 import { FormValuesIf, InputIf } from "@/sharedComponents/form";
 
 const getItemsCountWithSuffix = ({
@@ -68,16 +69,13 @@ const DataTableWithModals = ({
     const { setToast } = useContext(MainContext);
     const [loading, setLoading] = useState(true);
     const [processing, setProcessing] = useState(false);
-
     const [initialized, setInitialized] = useState(false);
+
     const [items, setItems] = useState<DataRow[]>([]);
 
-    const [formValues, setFormValues] = useState<FormValuesIf>({});
-    const [deleteFormValues, setDeleteFormValues] = useState<FormValuesIf>({});
     const [addingNew, setAddingNew] = useState(false);
     const [editingId, setEditingId] = useState<number | undefined>(undefined);
     const [selectedIds, setSelectedIds] = useState<SelectedIdsType>([]);
-
     const [deleting, setDeleting] = useState(false);
 
     const loadItems = useCallback(() => {
@@ -100,9 +98,9 @@ const DataTableWithModals = ({
         }
     }, [initialized, loadItems]);
 
-    const handleAddItem = () => {
+    const handleAddItem = (values: FormValuesIf) => {
         setProcessing(true);
-        addItem(formValues)
+        addItem(values)
             .then(() => {
                 handleCloseAddNewModal();
                 loadItems();
@@ -122,9 +120,9 @@ const DataTableWithModals = ({
             });
     };
 
-    const handleEditItem = () => {
+    const handleEditItem = (values: FormValuesIf) => {
         setProcessing(true);
-        editItem(formValues)
+        editItem(values)
             .then(() => {
                 handleCloseEditingModal();
                 loadItems();
@@ -174,26 +172,21 @@ const DataTableWithModals = ({
 
     const handleCloseAddNewModal = () => {
         setAddingNew(false);
-        setFormValues({});
     };
 
     const handleCloseEditingModal = () => {
         setEditingId(undefined);
-        setFormValues({});
     };
 
     const handleCloseDeleteModal = () => {
         setDeleting(false);
-        setDeleteFormValues({});
     };
 
-    const setEditingIdAndInitializeForm = (newId: number | undefined) => {
-        const editingItem = newId
-            ? items.find((item) => item.id == newId)
+    const editingItem = useMemo(() => {
+        return editingId
+            ? items.find((item) => item.id == editingId)
             : undefined;
-        setFormValues(editingItem || {});
-        setEditingId(newId);
-    };
+    }, [items, editingId]);
 
     return (
         <Fragment>
@@ -206,30 +199,32 @@ const DataTableWithModals = ({
                 deleteSelected={() => setDeleting(true)}
                 tableColumns={tableColumns}
                 defaultOrderBy={"id"}
-                setEditingId={setEditingIdAndInitializeForm}
+                setEditingId={setEditingId}
                 loading={loading}
             />
-            <ModalForm
+            <UncontrolledModalForm
                 title={`Add New ${singularItemLabel}`}
                 open={addingNew}
                 handleClose={handleCloseAddNewModal}
                 handleSubmit={handleAddItem}
                 inputs={itemFormInputs}
-                values={formValues}
-                setValues={setFormValues}
                 processing={processing}
+                initialValues={{
+                    name: "",
+                    email: "",
+                    password: "",
+                }}
             />
-            <ModalForm
+            <UncontrolledModalForm
                 title={`Edit ${singularItemLabel}`}
-                open={!!editingId}
+                open={!!editingItem}
                 handleClose={handleCloseEditingModal}
                 handleSubmit={handleEditItem}
                 inputs={itemFormInputs}
-                values={formValues}
-                setValues={setFormValues}
                 processing={processing}
+                initialValues={editingItem}
             />
-            <ModalForm
+            <UncontrolledModalForm
                 title={`Delete ${getItemsCountWithSuffix({
                     count: selectedIds.length,
                     singularItemLabel,
@@ -239,9 +234,10 @@ const DataTableWithModals = ({
                 handleClose={handleCloseDeleteModal}
                 handleSubmit={handleDeleteItems}
                 inputs={deleteFormInputs}
-                values={deleteFormValues}
-                setValues={setDeleteFormValues}
                 processing={processing}
+                initialValues={{
+                    confirmation: false,
+                }}
             />
         </Fragment>
     );

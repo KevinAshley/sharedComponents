@@ -2,14 +2,14 @@ import { useRef, Ref, Fragment } from "react";
 import Modal from "./modal";
 import Form, { FormIf, FormValuesIf } from "./form";
 
-interface ModalFormIf extends FormIf {
+export interface ModalFormIf extends FormIf {
     title: string;
     open: boolean;
     handleClose: () => void;
     defaultValues?: FormValuesIf;
 }
 
-const ModalForm = ({
+const ModalFormInner = ({
     title,
     open,
     handleClose,
@@ -66,10 +66,10 @@ const ModalForm = ({
     );
 };
 
-const ModalFormWrapper = (props: ModalFormIf) => {
+const ModalForm = (props: ModalFormIf) => {
     const { open } = props;
     // no need to mount this until opened
-    return <Fragment>{open && <ModalForm {...props} />}</Fragment>;
+    return <Fragment>{open && <ModalFormInner {...props} />}</Fragment>;
 };
 
-export default ModalFormWrapper;
+export default ModalForm;
