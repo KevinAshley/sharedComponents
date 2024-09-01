@@ -63,7 +63,7 @@ const Form = React.forwardRef(
 
         const handleSubmitWrapped = (e: FormEvent) => {
             e.preventDefault();
-            handleSubmit();
+            handleSubmit(values);
         };
 
         useImperativeHandle(ref, () => ({
