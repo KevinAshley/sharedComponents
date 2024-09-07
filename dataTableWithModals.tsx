@@ -50,7 +50,10 @@ interface DataTableWithModalsIf {
     getItems: () => Promise<any>;
     deleteSelectedItems: (selectedIds: SelectedIdsType) => Promise<any>;
     addItem: (formValues: FormValuesIf) => Promise<any>;
-    editItem: (formValues: FormValuesIf) => Promise<any>;
+    editItem: (params: {
+        id: number;
+        changedValues: FormValuesIf;
+    }) => Promise<any>;
     itemFormInputs: InputIf[];
 }
 
@@ -76,6 +79,12 @@ const DataTableWithModals = ({
     const [editingId, setEditingId] = useState<number | undefined>(undefined);
     const [selectedIds, setSelectedIds] = useState<SelectedIdsType>([]);
     const [deleting, setDeleting] = useState(false);
+
+    const editingItem = useMemo(() => {
+        return editingId
+            ? items.find((item) => item.id == editingId)
+            : undefined;
+    }, [items, editingId]);
 
     const loadItems = useCallback(() => {
         setLoading(true);
@@ -119,9 +128,12 @@ const DataTableWithModals = ({
             });
     };
 
-    const handleEditItem = (values: FormValuesIf) => {
+    const handleEditItem = (changedValues: FormValuesIf) => {
         setProcessing(true);
-        editItem(values)
+        editItem({
+            id: editingItem?.id || -1, // negative ID will result in an intentional error
+            changedValues,
+        })
             .then(() => {
                 handleCloseEditingModal();
                 loadItems();
@@ -180,12 +192,6 @@ const DataTableWithModals = ({
     const handleCloseDeleteModal = () => {
         setDeleting(false);
     };
-
-    const editingItem = useMemo(() => {
-        return editingId
-            ? items.find((item) => item.id == editingId)
-            : undefined;
-    }, [items, editingId]);
 
     return (
         <Fragment>

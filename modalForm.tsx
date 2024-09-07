@@ -20,6 +20,7 @@ const ModalFormInner = ({
     setValues,
     defaultValues,
     processing,
+    submitChangesOnly,
 }: ModalFormIf) => {
     const initialValues = useRef(values);
     const formRef = useRef<any>();
@@ -62,6 +63,7 @@ const ModalFormInner = ({
                 ref={formRef}
                 processing={processing}
                 submitDisabled={!changesPending}
+                submitChangesOnly={submitChangesOnly}
             />
         </Modal>
     );
