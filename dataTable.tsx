@@ -323,24 +323,26 @@ const DataTable = ({
     data,
     setAddNewOpen,
     defaultOrderBy = "id",
-    title,
+    tableHeading,
     selected,
     setSelected,
     deleteSelected,
     tableColumns,
     setEditingId,
-    loading,
+    loading = false,
+    emptyRowsContent,
 }: {
     data: DataRow[];
     setAddNewOpen: Function;
     defaultOrderBy?: keyof DataRow;
-    title: string;
+    tableHeading: string;
     selected: number[];
     setSelected: Function;
     deleteSelected: Function;
     tableColumns: TableColumnIf[];
     setEditingId?: (newId: number | undefined) => void;
-    loading: boolean;
+    loading?: boolean;
+    emptyRowsContent?: React.ReactNode | React.ReactNode[];
 }) => {
     const [order, setOrder] = React.useState<Order>("asc");
     const [orderBy, setOrderBy] = React.useState<keyof DataRow>(defaultOrderBy);
@@ -428,10 +430,11 @@ const DataTable = ({
                 <EnhancedTableToolbar
                     numSelected={selected.length}
                     setAddNewOpen={setAddNewOpen}
-                    title={title}
+                    title={tableHeading}
                     deleteSelected={deleteSelected}
                     loading={loading}
                 />
+
                 <TableContainer>
                     <Table
                         aria-labelledby="tableTitle"
@@ -533,7 +536,9 @@ const DataTable = ({
                                         height: (dense ? 33 : 53) * emptyRows,
                                     }}
                                 >
-                                    <TableCell colSpan={6} />
+                                    <TableCell colSpan={999}>
+                                        {emptyRowsContent}
+                                    </TableCell>
                                 </TableRow>
                             )}
                         </TableBody>

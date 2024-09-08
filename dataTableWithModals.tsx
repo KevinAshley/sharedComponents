@@ -196,7 +196,7 @@ const DataTableWithModals = ({
     return (
         <Fragment>
             <DataTable
-                title={tableHeading}
+                tableHeading={tableHeading}
                 data={items}
                 setAddNewOpen={setAddingNew}
                 selected={selectedIds}
