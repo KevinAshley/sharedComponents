@@ -18,7 +18,12 @@ import Box from "@mui/material/Box";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import { Typography } from "@mui/material";
 import RoutedLink from "../routedLink";
-import { userLogin, userLogout, getAuthUser } from "@/app/lib/actions/auth";
+import {
+    userLogin,
+    userLogout,
+    getAuthUser,
+    getAuthUserOrUndefined,
+} from "@/app/lib/actions/auth";
 
 interface RemoveThoseKeys {
     password: unknown;
@@ -110,7 +115,6 @@ const UserContextProvider = ({
     const [loginModalIsOpen, setLoginModalIsOpen] = useState(false);
     const [signupModalIsOpen, setSignupModalIsOpen] = useState(false);
     const [processing, setProcessing] = useState(false);
-    const [isMounted, setIsMounted] = useState(false);
 
     const getUser = useCallback(() => {
         getAuthUser()
@@ -128,11 +132,13 @@ const UserContextProvider = ({
     }, [setToast]);
 
     useEffect(() => {
-        if (!isMounted) {
-            setIsMounted(true);
-            getUser();
-        }
-    }, [getUser, isMounted]);
+        // initial mount only
+        getAuthUserOrUndefined()
+            .then(setUser)
+            .finally(() => {
+                setAuthenticating(false);
+            });
+    }, []);
 
     const handleLogin = (values: FormValuesIf) => {
         setProcessing(true);
