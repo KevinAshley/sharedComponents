@@ -405,10 +405,6 @@ const DataTable = ({
 
     const isSelected = (id: number) => selected.includes(id);
 
-    // Avoid a layout jump when reaching the last page with empty rows.
-    const emptyRows =
-        page > 0 ? Math.max(0, (1 + page) * rowsPerPage - data.length) : 0;
-
     const visibleRows: DataRow[] = React.useMemo(
         () =>
             loading && !data.length
@@ -423,6 +419,8 @@ const DataTable = ({
                   ),
         [data, order, orderBy, page, rowsPerPage, loading]
     );
+
+    const emptyRows = rowsPerPage - visibleRows.length;
 
     return (
         <Box sx={{ width: "100%" }}>
@@ -532,7 +530,7 @@ const DataTable = ({
                             {emptyRows > 0 && (
                                 <TableRow
                                     style={{
-                                        height: (dense ? 25 : 43) * emptyRows,
+                                        height: (dense ? 33 : 53) * emptyRows,
                                     }}
                                 >
                                     <TableCell colSpan={6} />
