@@ -14,12 +14,14 @@ interface RemoveThoseKeys {
 interface AuthUser extends Omit<User, keyof RemoveThoseKeys> {}
 
 interface UserContextIf {
+    authenticating: boolean;
     user?: AuthUser;
     getUser: () => void;
     clearUser: () => void;
 }
 
 const defaultValue = {
+    authenticating: true,
     user: undefined,
     getUser: () => {},
     clearUser: () => {},
@@ -35,6 +37,7 @@ const UserContextProvider = ({
     children: React.ReactNode | React.ReactNode[];
 }) => {
     const [user, setUser] = useState<AuthUser | undefined>(undefined);
+    const [authenticating, setAuthenticating] = useState(true);
 
     const getUser = () => {
         apiFetchWrapper({
@@ -45,6 +48,9 @@ const UserContextProvider = ({
             .catch((err) => {
                 console.log("Problem getting user", err.message);
                 setUser(undefined);
+            })
+            .finally(() => {
+                setAuthenticating(false);
             });
     };
 
@@ -56,11 +62,15 @@ const UserContextProvider = ({
         if (sessionToken) {
             // if there is a session token, the get the USER via api endpoint
             getUser();
+        } else {
+            setAuthenticating(false);
         }
     }, [sessionToken]);
 
     return (
-        <UserContext.Provider value={{ user, getUser, clearUser }}>
+        <UserContext.Provider
+            value={{ authenticating, user, getUser, clearUser }}
+        >
             {children}
         </UserContext.Provider>
     );
