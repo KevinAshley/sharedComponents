@@ -412,7 +412,7 @@ const DataTable = ({
     const visibleRows: DataRow[] = React.useMemo(
         () =>
             loading && !data.length
-                ? Array.from(Array(4)).map((p, placeholderIndex) => {
+                ? Array.from(Array(rowsPerPage)).map((p, placeholderIndex) => {
                       return {
                           id: placeholderIndex,
                       };

@@ -1,10 +1,13 @@
 import { createHash, createPrivateKey } from "crypto";
+import { cookies } from "next/headers";
+import jwt from "jsonwebtoken";
 
 const isProduction = process.env.NODE_ENV === "production";
 
-const jwtPrivateKey = isProduction
-    ? process.env.JWT_PRIVATE_KEY_PROD
-    : process.env.JWT_PRIVATE_KEY_DEV;
+export const jwtPrivateKey =
+    (isProduction
+        ? process.env.JWT_PRIVATE_KEY_PROD
+        : process.env.JWT_PRIVATE_KEY_DEV) || "MISSING";
 
 const passwordSalt = isProduction
     ? process.env.PASSWORD_SALT_PROD
@@ -59,4 +62,24 @@ export const createSessionHash = (
         salt: sessionSalt,
         pepper: sessionPepper,
     });
+};
+
+export const getUserIdFromCookies = () => {
+    const cookieStore = cookies();
+    const sessionToken = cookieStore.get("sessionToken");
+    try {
+        const decodedToken: any = jwt.verify(
+            sessionToken?.value || "",
+            jwtPrivateKey || ""
+        );
+        // ^ this can throw an error
+        if (!decodedToken?.userId) {
+            // we will consider this an error as well
+            throw new Error("Invalid JWT");
+        }
+        return decodedToken?.userId;
+    } catch (e: any) {
+        // invalid JWT, probably not logged in
+        throw new Error("Invalid session token");
+    }
 };
