@@ -192,7 +192,7 @@ const UserContextProvider = ({
                 });
             })
             .finally(() => {
-                setLoginModalIsOpen(false);
+                setSignupModalIsOpen(false);
                 setProcessing(false);
             });
     };
