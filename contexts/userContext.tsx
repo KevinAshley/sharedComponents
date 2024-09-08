@@ -14,6 +14,10 @@ import { apiFetchWrapper, ApiMethod } from "@/sharedComponents/nextApi";
 import UncontrolledModalForm from "@/sharedComponents/modalFormUncontrolled";
 import { FormValuesIf, InputIf } from "@/sharedComponents/form";
 import { MainContext, ToastVariant } from "./mainContext";
+import Box from "@mui/material/Box";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import { Typography } from "@mui/material";
+import RoutedLink from "../routedLink";
 
 interface RemoveThoseKeys {
     password: unknown;
@@ -60,6 +64,16 @@ const loginFormInputs: InputIf[] = [
     },
 ];
 
+const signupFormInputs: InputIf[] = [
+    {
+        id: "name",
+        label: "Name",
+        type: "text",
+        required: true,
+    },
+    ...loginFormInputs,
+];
+
 const logoutFormInputs: InputIf[] = [
     {
         id: "name",
@@ -95,6 +109,7 @@ const UserContextProvider = ({
     // loading state for components that require a user
     const [userModalIsOpen, setUserModalIsOpen] = useState(false);
     const [loginModalIsOpen, setLoginModalIsOpen] = useState(false);
+    const [signupModalIsOpen, setSignupModalIsOpen] = useState(false);
     const [processing, setProcessing] = useState(false);
 
     const getUser = () => {
@@ -131,6 +146,32 @@ const UserContextProvider = ({
     }, [sessionToken]);
 
     const handleLogin = (values: FormValuesIf) => {
+        setProcessing(true);
+        apiFetchWrapper({
+            method: ApiMethod.PATCH,
+            uri: `/api/auth`,
+            body: values,
+        })
+            .then(() => {
+                setToast({
+                    message: `Successfully logged in!`,
+                    variant: ToastVariant.SUCCESS,
+                });
+                getUser();
+            })
+            .catch((err) => {
+                setToast({
+                    message: err.message,
+                    variant: ToastVariant.ERROR,
+                });
+            })
+            .finally(() => {
+                setLoginModalIsOpen(false);
+                setProcessing(false);
+            });
+    };
+
+    const handleSignup = (values: FormValuesIf) => {
         setProcessing(true);
         apiFetchWrapper({
             method: ApiMethod.POST,
@@ -182,6 +223,18 @@ const UserContextProvider = ({
             });
     };
 
+    const switchToSignUp = (e: React.MouseEvent<HTMLElement>) => {
+        e.preventDefault();
+        setLoginModalIsOpen(false);
+        setSignupModalIsOpen(true);
+    };
+
+    const switchToSignIn = (e: React.MouseEvent<HTMLElement>) => {
+        e.preventDefault();
+        setSignupModalIsOpen(false);
+        setLoginModalIsOpen(true);
+    };
+
     return (
         <UserContext.Provider
             value={{
@@ -201,6 +254,56 @@ const UserContextProvider = ({
                 processing={processing}
                 initialValues={{}}
                 submitChangesOnly={true}
+                prependContent={
+                    <Box
+                        sx={{
+                            display: "flex",
+                            flexDirection: "column",
+                            alignItems: "center",
+                            justifyContent: "center",
+                        }}
+                    >
+                        <AccountCircleIcon
+                            sx={{ fontSize: "6rem", marginBottom: "1rem" }}
+                        />
+                        <Typography variant={"body1"}>
+                            Not registered?{" "}
+                            <RoutedLink href={"#"} onClick={switchToSignUp}>
+                                Sign up
+                            </RoutedLink>
+                        </Typography>
+                    </Box>
+                }
+            />
+            <UncontrolledModalForm
+                title={`Sign Up`}
+                open={signupModalIsOpen}
+                handleClose={() => setSignupModalIsOpen(false)}
+                handleSubmit={handleSignup}
+                inputs={signupFormInputs}
+                processing={processing}
+                initialValues={{}}
+                submitChangesOnly={true}
+                prependContent={
+                    <Box
+                        sx={{
+                            display: "flex",
+                            flexDirection: "column",
+                            alignItems: "center",
+                            justifyContent: "center",
+                        }}
+                    >
+                        <AccountCircleIcon
+                            sx={{ fontSize: "6rem", marginBottom: "1rem" }}
+                        />
+                        <Typography variant={"body1"}>
+                            Already registered?{" "}
+                            <RoutedLink href={"#"} onClick={switchToSignIn}>
+                                Sign In
+                            </RoutedLink>
+                        </Typography>
+                    </Box>
+                }
             />
 
             <UncontrolledModalForm

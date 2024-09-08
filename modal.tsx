@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Fragment, ReactNode } from "react";
 import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
 import DialogActions from "@mui/material/DialogActions";
@@ -6,6 +6,7 @@ import DialogContent from "@mui/material/DialogContent";
 import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
+import Divider from "@mui/material/Divider";
 
 const Modal = ({
     title,
@@ -17,6 +18,7 @@ const Modal = ({
     processing,
     noCancel,
     disabled,
+    prependContent,
 }: {
     title: string;
     open: boolean;
@@ -27,6 +29,7 @@ const Modal = ({
     processing?: boolean;
     noCancel?: boolean;
     disabled?: boolean;
+    prependContent?: ReactNode;
 }) => {
     return (
         <Dialog
@@ -46,6 +49,13 @@ const Modal = ({
                     <CloseIcon />
                 </IconButton>
             </DialogTitle>
+            {!!prependContent && (
+                <Fragment>
+                    <Divider />
+                    <DialogContent>{prependContent}</DialogContent>
+                </Fragment>
+            )}
+
             <DialogContent dividers={true}>{children}</DialogContent>
             <DialogActions sx={{ padding: "8px 24px" }}>
                 {!noCancel && (

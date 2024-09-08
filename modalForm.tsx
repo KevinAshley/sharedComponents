@@ -1,4 +1,4 @@
-import { useRef, Ref, Fragment, useMemo } from "react";
+import { useRef, Ref, Fragment, useMemo, ReactNode } from "react";
 import Modal from "./modal";
 import Form, { FormIf, FormValuesIf } from "./form";
 import { getChangedFormValues } from "@/sharedComponents/utilities";
@@ -8,6 +8,7 @@ export interface ModalFormIf extends FormIf {
     open: boolean;
     handleClose: () => void;
     defaultValues?: FormValuesIf;
+    prependContent?: ReactNode;
 }
 
 const ModalFormInner = ({
@@ -21,6 +22,7 @@ const ModalFormInner = ({
     defaultValues,
     processing,
     submitChangesOnly,
+    prependContent,
 }: ModalFormIf) => {
     const initialValues = useRef(values);
     const formRef = useRef<any>();
@@ -53,6 +55,7 @@ const ModalFormInner = ({
             handleSubmit={handleSubmitFromModalButton}
             processing={processing}
             disabled={!changesPending}
+            prependContent={prependContent}
         >
             <Form
                 inputs={inputs}
