@@ -18,6 +18,10 @@ import {
 } from "@/sharedComponents/contexts/mainContext";
 import UncontrolledModalForm from "@/sharedComponents/modalFormUncontrolled";
 import { FormValuesIf, InputIf } from "@/sharedComponents/form";
+import { UserContext } from "@/sharedComponents/contexts/userContext";
+import Box from "@mui/material/Box";
+import ReportIcon from "@mui/icons-material/Report";
+import Typography from "@mui/material/Typography";
 
 const getItemsCountWithSuffix = ({
     count,
@@ -57,7 +61,7 @@ interface DataTableWithModalsIf {
     itemFormInputs: InputIf[];
 }
 
-const DataTableWithModals = ({
+const DataTableWithModalsInner = ({
     tableHeading,
     singularItemLabel,
     pluralItemsLabel,
@@ -246,6 +250,56 @@ const DataTableWithModals = ({
                 }}
             />
         </Fragment>
+    );
+};
+
+const DataTableWithModals = (props: DataTableWithModalsIf) => {
+    const { tableHeading, tableColumns } = props;
+    const { authenticating, user } = useContext(UserContext);
+    if (!user) {
+        return (
+            <DataTable
+                tableHeading={tableHeading}
+                tableColumns={tableColumns}
+                setAddNewOpen={() => {}}
+                data={[]}
+                selected={[]}
+                setSelected={() => {}}
+                deleteSelected={() => {}}
+                emptyRowsContent={
+                    <Box sx={{ position: "relative" }}>
+                        <Box
+                            sx={{
+                                position: "absolute",
+                                inset: 0,
+                                display: "flex",
+                                flexDirection: "column",
+                                alignItems: "center",
+                                justifyContent: "center",
+                            }}
+                        >
+                            <ReportIcon
+                                sx={{ fontSize: "10rem", marginBottom: "1rem" }}
+                            />
+                            <Typography variant={"h2"} component={"h2"} mb={2}>
+                                Login Required
+                            </Typography>
+                            <Box>
+                                Only logged-in users can use the {tableHeading}.
+                            </Box>
+                        </Box>
+                    </Box>
+                }
+                loading={authenticating}
+            />
+        );
+    }
+    return (
+        <DataTableWithModalsInner
+            {...props}
+            key={user.id}
+            // ^ force the table to re-mount if the user changes
+        />
     );
 };
 
