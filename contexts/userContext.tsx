@@ -23,7 +23,7 @@ import {
     userLogout,
     getAuthUser,
     getAuthUserOrUndefined,
-} from "@/app/lib/actions/auth";
+} from "@/sharedComponents/lib/actions/auth";
 
 interface RemoveThoseKeys {
     password: unknown;
