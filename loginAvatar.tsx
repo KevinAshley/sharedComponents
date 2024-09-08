@@ -13,6 +13,7 @@ import {
     MainContext,
     ToastVariant,
 } from "@/sharedComponents/contexts/mainContext";
+import { verify } from "crypto";
 
 const StyledBadge = styled(Badge)({
     "& .MuiBadge-badge": {
@@ -78,7 +79,7 @@ const logoutFormInputs: InputIf[] = [
         disabled: true,
     },
     {
-        id: "verify",
+        id: "log_out",
         label: "I want to log out",
         type: "checkbox",
         required: true,
@@ -95,12 +96,37 @@ const LoginAvatar = () => {
         setDialogIsOpen(!dialogIsOpen);
     };
 
-    const handleLogout = (values: FormValuesIf) => {
+    const handleLogin = (values: FormValuesIf) => {
         setProcessing(true);
         apiFetchWrapper({
             method: ApiMethod.POST,
             uri: `/api/auth`,
-            body: {},
+            body: values,
+        })
+            .then(() => {
+                setDialogIsOpen(false);
+                setToast({
+                    message: `Successfully logged in!`,
+                    variant: ToastVariant.SUCCESS,
+                });
+            })
+            .catch((err) => {
+                setToast({
+                    message: err.message,
+                    variant: ToastVariant.ERROR,
+                });
+            })
+            .finally(() => {
+                setProcessing(false);
+            });
+    };
+
+    const handleLogout = (values: FormValuesIf) => {
+        setProcessing(true);
+        apiFetchWrapper({
+            method: ApiMethod.DELETE,
+            uri: `/api/auth`,
+            body: values,
         })
             .then(() => {
                 setDialogIsOpen(false);
@@ -131,26 +157,29 @@ const LoginAvatar = () => {
                     <AccountCircleIcon />
                 </StyledBadge>
             </IconButton>
-            {!!user ? (
+            {!user ? (
                 <UncontrolledModalForm
-                    title={`Logged In As...`}
+                    title={`Log In`}
+                    open={!!dialogIsOpen}
+                    handleClose={() => setDialogIsOpen(false)}
+                    handleSubmit={handleLogin}
+                    inputs={loginFormInputs}
+                    processing={processing}
+                    initialValues={{}}
+                    submitChangesOnly={true}
+                />
+            ) : (
+                <UncontrolledModalForm
+                    title={`Logged In`}
                     open={!!dialogIsOpen}
                     handleClose={() => setDialogIsOpen(false)}
                     handleSubmit={handleLogout}
                     inputs={logoutFormInputs}
                     processing={processing}
-                    initialValues={user}
-                    submitChangesOnly={true}
-                />
-            ) : (
-                <UncontrolledModalForm
-                    title={`Log In`}
-                    open={!!dialogIsOpen}
-                    handleClose={() => setDialogIsOpen(false)}
-                    handleSubmit={() => {}}
-                    inputs={loginFormInputs}
-                    processing={processing}
-                    initialValues={{}}
+                    initialValues={{
+                        ...user,
+                        log_out: false,
+                    }}
                     submitChangesOnly={true}
                 />
             )}
