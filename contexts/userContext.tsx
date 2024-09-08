@@ -44,6 +44,7 @@ const UserContextProvider = ({
             .then(setUser)
             .catch((err) => {
                 console.log("Problem getting user", err.message);
+                setUser(undefined);
             });
     };
 
