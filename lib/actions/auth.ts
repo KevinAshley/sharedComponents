@@ -8,7 +8,7 @@ import { PrismaClient, User } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-export async function getAuthUser() {
+export async function getAuthUser(): Promise<User> {
     const session = await auth();
     if (session?.user?.email) {
         const user = await prisma.user.findUnique({
@@ -23,7 +23,7 @@ export async function getAuthUser() {
     throw new Error("Invalid Auth User");
 }
 
-export async function getAuthUserOrUndefined() {
+export async function getAuthUserOrUndefined(): Promise<User | undefined> {
     try {
         const user = await getAuthUser();
         return user;

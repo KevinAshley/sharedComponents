@@ -34,14 +34,12 @@ interface RemoveThoseKeys {
 interface AuthUser extends Omit<User, keyof RemoveThoseKeys> {}
 
 interface UserContextIf {
-    authenticating: boolean;
     user?: AuthUser;
     setUserModalIsOpen: Dispatch<SetStateAction<boolean>>;
     setLoginModalIsOpen: Dispatch<SetStateAction<boolean>>;
 }
 
 const defaultValue = {
-    authenticating: true,
     user: undefined,
     setUserModalIsOpen: () => {},
     setLoginModalIsOpen: () => {},
@@ -101,16 +99,12 @@ const logoutFormInputs: InputIf[] = [
     },
 ];
 
-const UserContextProvider = ({
-    children,
-}: {
+const UserContextProvider = (props: {
     children: React.ReactNode | React.ReactNode[];
+    user?: User;
 }) => {
     const { setToast } = useContext(MainContext);
-    const [user, setUser] = useState<AuthUser | undefined>(undefined);
-    const [authenticating, setAuthenticating] = useState(true);
-    // we have an authenticating state so we can show an intermediate
-    // loading state for components that require a user
+    const [user, setUser] = useState<AuthUser | undefined>(props.user);
     const [userModalIsOpen, setUserModalIsOpen] = useState(false);
     const [loginModalIsOpen, setLoginModalIsOpen] = useState(false);
     const [signupModalIsOpen, setSignupModalIsOpen] = useState(false);
@@ -125,20 +119,8 @@ const UserContextProvider = ({
                     variant: ToastVariant.ERROR,
                 });
                 setUser(undefined);
-            })
-            .finally(() => {
-                setAuthenticating(false);
             });
     }, [setToast]);
-
-    useEffect(() => {
-        // initial mount only
-        getAuthUserOrUndefined()
-            .then(setUser)
-            .finally(() => {
-                setAuthenticating(false);
-            });
-    }, []);
 
     const handleLogin = (values: FormValuesIf) => {
         setProcessing(true);
@@ -225,13 +207,12 @@ const UserContextProvider = ({
     return (
         <UserContext.Provider
             value={{
-                authenticating,
                 user,
                 setUserModalIsOpen,
                 setLoginModalIsOpen,
             }}
         >
-            {children}
+            {props.children}
             <UncontrolledModalForm
                 title={`Log In`}
                 open={loginModalIsOpen}

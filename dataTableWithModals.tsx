@@ -255,7 +255,7 @@ const DataTableWithModalsInner = ({
 
 const DataTableWithModals = (props: DataTableWithModalsIf) => {
     const { tableHeading, tableColumns } = props;
-    const { authenticating, user } = useContext(UserContext);
+    const { user } = useContext(UserContext);
     if (!user) {
         return (
             <DataTable
@@ -290,7 +290,6 @@ const DataTableWithModals = (props: DataTableWithModalsIf) => {
                         </Box>
                     </Box>
                 }
-                loading={authenticating}
             />
         );
     }
