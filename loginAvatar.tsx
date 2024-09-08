@@ -1,12 +1,13 @@
 /** @format */
 
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useContext, useState } from "react";
 import IconButton from "@mui/material/IconButton";
 import Badge from "@mui/material/Badge";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import ModalForm from "@/sharedComponents/modalForm";
 import { FormValuesIf } from "@/sharedComponents/form";
 import styled from "@mui/system/styled";
+import { UserContext } from "./contexts/userContext";
 
 const loginFormInputs = [
     {
@@ -63,6 +64,7 @@ const StyledBadge = styled(Badge)({
 });
 
 const LoginAvatar = () => {
+    const { user } = useContext(UserContext);
     const [dialogIsOpen, setDialogIsOpen] = useState(false);
     const [formValues, setFormValues] =
         useState<FormValuesIf>(defaultFormValues);
@@ -76,7 +78,7 @@ const LoginAvatar = () => {
                 <StyledBadge
                     overlap="circular"
                     anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-                    variant="dot"
+                    variant={!!user ? "dot" : undefined}
                 >
                     <AccountCircleIcon />
                 </StyledBadge>
