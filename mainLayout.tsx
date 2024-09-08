@@ -5,13 +5,8 @@ import MainContextProvider from "@/sharedComponents/contexts/mainContext";
 import UserContextProvider from "./contexts/userContext";
 import Toast from "@/sharedComponents/toast";
 import { RouteGroupIf } from "@/sharedComponents/navigator";
-import {
-    Experimental_CssVarsProvider as CssVarsProvider,
-    CssVarsTheme,
-    Theme,
-} from "@mui/material/styles";
+import { CssVarsTheme, Theme } from "@mui/material/styles";
 import { StaticImageData } from "next/image";
-import { cookies } from "next/headers";
 
 interface MainLayoutIf {
     children: ReactNode;
@@ -28,14 +23,12 @@ export function MainLayout({
     websiteName,
     websiteAvatar,
 }: MainLayoutIf) {
-    const cookieStore = cookies();
-    const sessionToken = cookieStore.get("sessionToken");
     return (
         <html lang="en" suppressHydrationWarning={true}>
             <body>
                 <ThemeProvider theme={theme}>
                     <MainContextProvider>
-                        <UserContextProvider sessionToken={sessionToken}>
+                        <UserContextProvider>
                             <PageWrapper
                                 groupedRoutes={groupedRoutes}
                                 websiteName={websiteName}

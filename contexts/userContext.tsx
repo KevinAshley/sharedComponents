@@ -9,7 +9,6 @@ import {
     SetStateAction,
 } from "react";
 import { User } from "@prisma/client";
-import { RequestCookie } from "next/dist/compiled/@edge-runtime/cookies";
 import { apiFetchWrapper, ApiMethod } from "@/sharedComponents/nextApi";
 import UncontrolledModalForm from "@/sharedComponents/modalFormUncontrolled";
 import { FormValuesIf, InputIf } from "@/sharedComponents/form";
@@ -18,6 +17,7 @@ import Box from "@mui/material/Box";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import { Typography } from "@mui/material";
 import RoutedLink from "../routedLink";
+import { userLogin, userLogout, getAuthUser } from "@/app/lib/actions";
 
 interface RemoveThoseKeys {
     password: unknown;
@@ -96,10 +96,8 @@ const logoutFormInputs: InputIf[] = [
 ];
 
 const UserContextProvider = ({
-    sessionToken,
     children,
 }: {
-    sessionToken?: RequestCookie | undefined;
     children: React.ReactNode | React.ReactNode[];
 }) => {
     const { setToast } = useContext(MainContext);
@@ -113,11 +111,12 @@ const UserContextProvider = ({
     const [processing, setProcessing] = useState(false);
 
     const getUser = () => {
-        apiFetchWrapper({
-            method: ApiMethod.GET,
-            uri: "/api/auth",
-        })
-            .then(setUser)
+        getAuthUser()
+            .then((data: any) => {
+                if (data.user) {
+                    setUser(data.user);
+                }
+            })
             .catch((err) => {
                 setToast({
                     message: err.message,
@@ -130,28 +129,13 @@ const UserContextProvider = ({
             });
     };
 
-    const clearUser = () => {
-        setUser(undefined);
-    };
-
     useEffect(() => {
-        // sessionToken never changes, it comes as props from the server
-        // this useEffect will only fire one time on mount
-        if (sessionToken) {
-            // if there is a session token, the get the USER via api endpoint
-            getUser();
-        } else {
-            setAuthenticating(false);
-        }
-    }, [sessionToken]);
+        getUser();
+    }, []);
 
     const handleLogin = (values: FormValuesIf) => {
         setProcessing(true);
-        apiFetchWrapper({
-            method: ApiMethod.PATCH,
-            uri: `/api/auth`,
-            body: values,
-        })
+        userLogin(values)
             .then(() => {
                 setToast({
                     message: `Successfully logged in!`,
@@ -199,18 +183,14 @@ const UserContextProvider = ({
 
     const handleLogout = (values: FormValuesIf) => {
         setProcessing(true);
-        apiFetchWrapper({
-            method: ApiMethod.DELETE,
-            uri: `/api/auth`,
-            body: values,
-        })
+        userLogout()
             .then(() => {
                 setUserModalIsOpen(false);
                 setToast({
                     message: `Successfully logged out!`,
                     variant: ToastVariant.SUCCESS,
                 });
-                clearUser();
+                setUser(undefined);
             })
             .catch((err) => {
                 setToast({
