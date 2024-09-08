@@ -7,6 +7,7 @@ import {
     useContext,
     Dispatch,
     SetStateAction,
+    useCallback,
 } from "react";
 import { User } from "@prisma/client";
 import { apiFetchWrapper, ApiMethod } from "@/sharedComponents/nextApi";
@@ -109,8 +110,9 @@ const UserContextProvider = ({
     const [loginModalIsOpen, setLoginModalIsOpen] = useState(false);
     const [signupModalIsOpen, setSignupModalIsOpen] = useState(false);
     const [processing, setProcessing] = useState(false);
+    const [isMounted, setIsMounted] = useState(false);
 
-    const getUser = () => {
+    const getUser = useCallback(() => {
         getAuthUser()
             .then((data: any) => {
                 if (data.user) {
@@ -127,11 +129,14 @@ const UserContextProvider = ({
             .finally(() => {
                 setAuthenticating(false);
             });
-    };
+    }, [setToast]);
 
     useEffect(() => {
-        getUser();
-    }, []);
+        if (!isMounted) {
+            setIsMounted(true);
+            getUser();
+        }
+    }, [getUser, isMounted]);
 
     const handleLogin = (values: FormValuesIf) => {
         setProcessing(true);
