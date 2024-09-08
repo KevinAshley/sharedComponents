@@ -17,7 +17,7 @@ import Box from "@mui/material/Box";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import { Typography } from "@mui/material";
 import RoutedLink from "../routedLink";
-import { userLogin, userLogout, getAuthUser } from "@/app/lib/actions";
+import { userLogin, userLogout, getAuthUser } from "@/app/lib/actions/auth";
 
 interface RemoveThoseKeys {
     password: unknown;
