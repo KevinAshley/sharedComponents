@@ -65,7 +65,7 @@ export const apiFetchWrapper = ({
         });
 };
 
-export const getIdFromNextRequest = (req: Request) => {
+export const getIdParamFromRequest = (req: Request) => {
     const url = new URL(req.url);
     const searchParams = new URLSearchParams(url.searchParams);
     return Number(searchParams.get("id"));
