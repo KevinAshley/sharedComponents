@@ -87,7 +87,7 @@ const logoutFormInputs: InputIf[] = [
 ];
 
 const LoginAvatar = () => {
-    const { user } = useContext(UserContext);
+    const { user, getUser, clearUser } = useContext(UserContext);
     const { setToast } = useContext(MainContext);
     const [dialogIsOpen, setDialogIsOpen] = useState(false);
     const [processing, setProcessing] = useState(false);
@@ -109,6 +109,7 @@ const LoginAvatar = () => {
                     message: `Successfully logged in!`,
                     variant: ToastVariant.SUCCESS,
                 });
+                getUser();
             })
             .catch((err) => {
                 setToast({
@@ -134,6 +135,7 @@ const LoginAvatar = () => {
                     message: `Successfully logged out!`,
                     variant: ToastVariant.SUCCESS,
                 });
+                clearUser();
             })
             .catch((err) => {
                 setToast({
