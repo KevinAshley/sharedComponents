@@ -114,11 +114,7 @@ const UserContextProvider = ({
 
     const getUser = useCallback(() => {
         getAuthUser()
-            .then((data: any) => {
-                if (data.user) {
-                    setUser(data.user);
-                }
-            })
+            .then(setUser)
             .catch((err) => {
                 setToast({
                     message: err.message,
