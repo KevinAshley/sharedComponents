@@ -70,3 +70,7 @@ export const getIdFromNextRequest = (req: Request) => {
     const searchParams = new URLSearchParams(url.searchParams);
     return Number(searchParams.get("id"));
 };
+
+export function getUniqueIdString() {
+    return (Date.now() + Math.random()).toString(36).slice(1);
+}

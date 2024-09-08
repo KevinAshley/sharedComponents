@@ -104,7 +104,6 @@ const LoginAvatar = () => {
             body: values,
         })
             .then(() => {
-                setDialogIsOpen(false);
                 setToast({
                     message: `Successfully logged in!`,
                     variant: ToastVariant.SUCCESS,
@@ -118,6 +117,7 @@ const LoginAvatar = () => {
                 });
             })
             .finally(() => {
+                setDialogIsOpen(false);
                 setProcessing(false);
             });
     };
