@@ -22,6 +22,7 @@ export interface InputIf {
     id: string;
     required?: boolean;
     autoComplete?: boolean;
+    disabled?: boolean;
 }
 
 export interface FormValuesIf {
@@ -109,8 +110,14 @@ const Form = React.forwardRef(
                     }}
                 >
                     {inputs.map((thisInput, index) => {
-                        const { type, label, id, required, autoComplete } =
-                            thisInput;
+                        const {
+                            type,
+                            label,
+                            id,
+                            required,
+                            autoComplete,
+                            disabled,
+                        } = thisInput;
                         const value = values[id];
                         const handleChange = (
                             e: React.ChangeEvent<HTMLInputElement>
@@ -137,7 +144,7 @@ const Form = React.forwardRef(
                                         }
                                         label={label}
                                         required={required}
-                                        disabled={processing}
+                                        disabled={disabled || processing}
                                     />
                                 ) : (
                                     <TextField
@@ -152,7 +159,7 @@ const Form = React.forwardRef(
                                         }
                                         onChange={handleChange}
                                         fullWidth={true}
-                                        disabled={processing}
+                                        disabled={disabled || processing}
                                         autoFocus={index === 0}
                                     />
                                 )}

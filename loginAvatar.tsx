@@ -4,35 +4,15 @@ import React, { Fragment, useContext, useState } from "react";
 import IconButton from "@mui/material/IconButton";
 import Badge from "@mui/material/Badge";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
-import ModalForm from "@/sharedComponents/modalForm";
-import { FormValuesIf } from "@/sharedComponents/form";
 import styled from "@mui/system/styled";
-import { UserContext } from "./contexts/userContext";
-
-const loginFormInputs = [
-    {
-        id: "email",
-        label: "Email",
-        type: "email",
-    },
-    {
-        id: "password",
-        label: "Password",
-        type: "password",
-    },
-    {
-        id: "verify",
-        label: "I am not a robot",
-        type: "checkbox",
-        required: true,
-    },
-];
-
-const defaultFormValues = {
-    email: "",
-    password: "",
-    verify: false,
-};
+import { UserContext } from "@/sharedComponents/contexts/userContext";
+import UncontrolledModalForm from "@/sharedComponents/modalFormUncontrolled";
+import { FormValuesIf, InputIf } from "@/sharedComponents/form";
+import { apiFetchWrapper, ApiMethod } from "@/sharedComponents/nextApi";
+import {
+    MainContext,
+    ToastVariant,
+} from "@/sharedComponents/contexts/mainContext";
 
 const StyledBadge = styled(Badge)({
     "& .MuiBadge-badge": {
@@ -63,13 +43,81 @@ const StyledBadge = styled(Badge)({
     },
 });
 
+const loginFormInputs: InputIf[] = [
+    {
+        id: "email",
+        label: "Email",
+        type: "email",
+        required: true,
+    },
+    {
+        id: "password",
+        label: "Password",
+        type: "password",
+        required: true,
+    },
+    {
+        id: "verify",
+        label: "I am not a robot",
+        type: "checkbox",
+        required: true,
+    },
+];
+
+const logoutFormInputs: InputIf[] = [
+    {
+        id: "name",
+        label: "Name",
+        type: "text",
+        disabled: true,
+    },
+    {
+        id: "email",
+        label: "Email",
+        type: "email",
+        disabled: true,
+    },
+    {
+        id: "verify",
+        label: "I want to log out",
+        type: "checkbox",
+        required: true,
+    },
+];
+
 const LoginAvatar = () => {
     const { user } = useContext(UserContext);
+    const { setToast } = useContext(MainContext);
     const [dialogIsOpen, setDialogIsOpen] = useState(false);
-    const [formValues, setFormValues] =
-        useState<FormValuesIf>(defaultFormValues);
+    const [processing, setProcessing] = useState(false);
+
     const toggleDialog = () => {
         setDialogIsOpen(!dialogIsOpen);
+    };
+
+    const handleLogout = (values: FormValuesIf) => {
+        setProcessing(true);
+        apiFetchWrapper({
+            method: ApiMethod.POST,
+            uri: `/api/auth`,
+            body: {},
+        })
+            .then(() => {
+                setDialogIsOpen(false);
+                setToast({
+                    message: `Successfully logged out!`,
+                    variant: ToastVariant.SUCCESS,
+                });
+            })
+            .catch((err) => {
+                setToast({
+                    message: err.message,
+                    variant: ToastVariant.ERROR,
+                });
+            })
+            .finally(() => {
+                setProcessing(false);
+            });
     };
 
     return (
@@ -83,17 +131,29 @@ const LoginAvatar = () => {
                     <AccountCircleIcon />
                 </StyledBadge>
             </IconButton>
-            <ModalForm
-                title={`Log In`}
-                open={!!dialogIsOpen}
-                handleClose={() => setDialogIsOpen(false)}
-                handleSubmit={() => {}}
-                inputs={loginFormInputs}
-                values={formValues}
-                setValues={setFormValues}
-                defaultValues={defaultFormValues}
-                processing={false}
-            />
+            {!!user ? (
+                <UncontrolledModalForm
+                    title={`Logged In As...`}
+                    open={!!dialogIsOpen}
+                    handleClose={() => setDialogIsOpen(false)}
+                    handleSubmit={handleLogout}
+                    inputs={logoutFormInputs}
+                    processing={processing}
+                    initialValues={user}
+                    submitChangesOnly={true}
+                />
+            ) : (
+                <UncontrolledModalForm
+                    title={`Log In`}
+                    open={!!dialogIsOpen}
+                    handleClose={() => setDialogIsOpen(false)}
+                    handleSubmit={() => {}}
+                    inputs={loginFormInputs}
+                    processing={processing}
+                    initialValues={{}}
+                    submitChangesOnly={true}
+                />
+            )}
         </Fragment>
     );
 };
