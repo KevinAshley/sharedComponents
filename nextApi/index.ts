@@ -1,10 +1,11 @@
 import { NextResponse } from "next/server";
 
 export enum ApiMethod {
-    POST = "POST",
-    PUT = "PUT",
-    GET = "GET",
-    DELETE = "DELETE",
+    GET = "GET", // get resource(s)
+    POST = "POST", // add resource(s)
+    PUT = "PUT", // replace resource(s)
+    PATCH = "PATCH", // partially update resource(s)
+    DELETE = "DELETE", // remove resource(s)
 }
 
 interface ErrorMessage {
