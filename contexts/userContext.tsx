@@ -37,12 +37,14 @@ interface UserContextIf {
     user?: AuthUser;
     setUserModalIsOpen: Dispatch<SetStateAction<boolean>>;
     setLoginModalIsOpen: Dispatch<SetStateAction<boolean>>;
+    setSignupModalIsOpen: Dispatch<SetStateAction<boolean>>;
 }
 
 const defaultValue = {
     user: undefined,
     setUserModalIsOpen: () => {},
     setLoginModalIsOpen: () => {},
+    setSignupModalIsOpen: () => {},
 };
 
 export const UserContext = createContext<UserContextIf>(defaultValue);
@@ -210,6 +212,7 @@ const UserContextProvider = (props: {
                 user,
                 setUserModalIsOpen,
                 setLoginModalIsOpen,
+                setSignupModalIsOpen,
             }}
         >
             {props.children}

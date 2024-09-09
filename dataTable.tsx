@@ -426,7 +426,7 @@ const DataTable = ({
 
     return (
         <Box sx={{ width: "100%" }}>
-            <Paper sx={{ width: "100%", mb: 2 }}>
+            <Paper sx={{ width: "100%", mb: 2 }} elevation={10}>
                 <EnhancedTableToolbar
                     numSelected={selected.length}
                     setAddNewOpen={setAddNewOpen}
@@ -555,12 +555,12 @@ const DataTable = ({
                     disabled={loading}
                 />
             </Paper>
-            <FormControlLabel
+            {/* <FormControlLabel
                 control={
                     <Switch checked={dense} onChange={handleChangeDense} />
                 }
                 label="Dense padding"
-            />
+            /> */}
         </Box>
     );
 };

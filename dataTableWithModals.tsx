@@ -22,6 +22,7 @@ import { UserContext } from "@/sharedComponents/contexts/userContext";
 import Box from "@mui/material/Box";
 import ReportIcon from "@mui/icons-material/Report";
 import Typography from "@mui/material/Typography";
+import { Button, ButtonGroup } from "@mui/material";
 
 const getItemsCountWithSuffix = ({
     count,
@@ -255,13 +256,14 @@ const DataTableWithModalsInner = ({
 
 const DataTableWithModals = (props: DataTableWithModalsIf) => {
     const { tableHeading, tableColumns } = props;
-    const { user } = useContext(UserContext);
+    const { user, setLoginModalIsOpen, setSignupModalIsOpen } =
+        useContext(UserContext);
     if (!user) {
         return (
             <DataTable
                 tableHeading={tableHeading}
                 tableColumns={tableColumns}
-                setAddNewOpen={() => {}}
+                setAddNewOpen={setSignupModalIsOpen}
                 data={[]}
                 selected={[]}
                 setSelected={() => {}}
@@ -286,6 +288,28 @@ const DataTableWithModals = (props: DataTableWithModalsIf) => {
                             </Typography>
                             <Box>
                                 Only logged-in users can use the {tableHeading}.
+                            </Box>
+                            <Box
+                                sx={{
+                                    display: "flex",
+                                    gap: "1rem",
+                                    marginTop: "1rem",
+                                }}
+                            >
+                                <Button
+                                    variant={"outlined"}
+                                    color={"inherit"}
+                                    onClick={() => setLoginModalIsOpen(true)}
+                                >
+                                    Log In
+                                </Button>
+                                <Button
+                                    variant={"contained"}
+                                    color={"primary"}
+                                    onClick={() => setSignupModalIsOpen(true)}
+                                >
+                                    Sign Up
+                                </Button>
                             </Box>
                         </Box>
                     </Box>
