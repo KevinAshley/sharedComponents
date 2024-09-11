@@ -9,7 +9,7 @@ const prisma = new PrismaClient();
 
 export async function getUsers() {
     const authUser = await getAuthUser();
-    throwErrorIfUserIsNotAdmin(authUser);
+    await throwErrorIfUserIsNotAdmin(authUser);
     const users = await prisma.user.findMany({
         select: {
             id: true,
@@ -25,7 +25,7 @@ export async function getUsers() {
 
 export async function addUser(data: FormValuesIf) {
     const authUser = await getAuthUser();
-    throwErrorIfUserIsNotAdmin(authUser);
+    await throwErrorIfUserIsNotAdmin(authUser);
     const { name, email, password, admin } = data as User;
     await prisma.user.create({
         data: {
@@ -45,7 +45,7 @@ export async function editUser({
     changedValues: FormValuesIf;
 }) {
     const authUser = await getAuthUser();
-    throwErrorIfUserIsNotAdmin(authUser);
+    await throwErrorIfUserIsNotAdmin(authUser);
     let data = changedValues;
     // update user
     if (data.password) {
@@ -65,7 +65,7 @@ export async function editUser({
 
 export async function deleteUsers(selectedIds: number[]) {
     const authUser = await getAuthUser();
-    throwErrorIfUserIsNotAdmin(authUser);
+    await throwErrorIfUserIsNotAdmin(authUser);
     await prisma.user.deleteMany({
         where: {
             id: {
