@@ -19,10 +19,10 @@ import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import { Typography } from "@mui/material";
 import RoutedLink from "../routedLink";
 import {
+    userSignup,
     userLogin,
     userLogout,
     getAuthUser,
-    getAuthUserOrUndefined,
 } from "@/sharedComponents/lib/actions/auth";
 
 interface RemoveThoseKeys {
@@ -148,14 +148,10 @@ const UserContextProvider = (props: {
 
     const handleSignup = (values: FormValuesIf) => {
         setProcessing(true);
-        apiFetchWrapper({
-            method: ApiMethod.POST,
-            uri: `/api/auth`,
-            body: values,
-        })
+        userSignup(values)
             .then(() => {
                 setToast({
-                    message: `Successfully logged in!`,
+                    message: `Successfully signed up!`,
                     variant: ToastVariant.SUCCESS,
                 });
                 getUser();
