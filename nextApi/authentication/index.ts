@@ -1,6 +1,3 @@
-"use server";
-// ^ we want to make sure we don't expose this to the client
-
 import { createHash } from "crypto";
 
 const isProduction = process.env.NODE_ENV === "production";
@@ -32,7 +29,7 @@ const createHashWithSaltAndPepper = ({
         .digest("hex");
 };
 
-export const createPasswordHash = async (password: string) => {
+export const createPasswordHash = (password: string) => {
     return createHashWithSaltAndPepper({
         secret: password,
         salt: passwordSalt,
