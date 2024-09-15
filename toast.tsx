@@ -25,7 +25,7 @@ const Toast = () => {
             // Close an active snack when a new one is added
             setOpen(false);
         }
-    }, [toastItems, activeToastItem, open]);
+    }, [toastItems, activeToastItem, setToastItems, open]);
 
     const handleClose = (
         event: React.SyntheticEvent | Event,
