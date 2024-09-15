@@ -9,32 +9,25 @@ import {
     SetStateAction,
     useCallback,
 } from "react";
-import { User } from "@prisma/client";
-import { apiFetchWrapper, ApiMethod } from "@/sharedComponents/nextApi";
+
 import UncontrolledModalForm from "@/sharedComponents/modalFormUncontrolled";
 import { FormValuesIf, InputIf } from "@/sharedComponents/form";
 import { MainContext, ToastVariant } from "./mainContext";
 import Box from "@mui/material/Box";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import { Typography } from "@mui/material";
-import RoutedLink from "../routedLink";
+import RoutedLink from "@/sharedComponents/routedLink";
 import {
     userSignup,
     userLogin,
     userLogout,
-    getAuthUser,
+    getAuthUserForClient,
 } from "@/sharedComponents/lib/actions/auth";
-
-interface RemoveThoseKeys {
-    password: unknown;
-    session_id: unknown;
-    session_expires: unknown;
-}
-
-interface AuthUser extends Omit<User, keyof RemoveThoseKeys> {}
+import { UserContextUser } from "@/sharedComponents/types";
 
 interface UserContextIf {
-    user?: AuthUser;
+    user?: UserContextUser;
+    userIsAdmin: boolean;
     setUserModalIsOpen: Dispatch<SetStateAction<boolean>>;
     setLoginModalIsOpen: Dispatch<SetStateAction<boolean>>;
     setSignupModalIsOpen: Dispatch<SetStateAction<boolean>>;
@@ -42,6 +35,7 @@ interface UserContextIf {
 
 const defaultValue = {
     user: undefined,
+    userIsAdmin: false,
     setUserModalIsOpen: () => {},
     setLoginModalIsOpen: () => {},
     setSignupModalIsOpen: () => {},
@@ -103,17 +97,19 @@ const logoutFormInputs: InputIf[] = [
 
 const UserContextProvider = (props: {
     children: React.ReactNode | React.ReactNode[];
-    user?: User;
+    user?: UserContextUser;
 }) => {
     const { setToast } = useContext(MainContext);
-    const [user, setUser] = useState<AuthUser | undefined>(props.user);
+    const [user, setUser] = useState<UserContextUser | undefined>(props.user);
     const [userModalIsOpen, setUserModalIsOpen] = useState(false);
     const [loginModalIsOpen, setLoginModalIsOpen] = useState(false);
     const [signupModalIsOpen, setSignupModalIsOpen] = useState(false);
     const [processing, setProcessing] = useState(false);
 
+    const userIsAdmin = !!user?.admin;
+
     const getUser = useCallback(() => {
-        getAuthUser()
+        getAuthUserForClient()
             .then(setUser)
             .catch((err) => {
                 setToast({
@@ -209,6 +205,7 @@ const UserContextProvider = (props: {
                 setUserModalIsOpen,
                 setLoginModalIsOpen,
                 setSignupModalIsOpen,
+                userIsAdmin,
             }}
         >
             {props.children}

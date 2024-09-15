@@ -5,15 +5,13 @@ import ThemeProvider from "@/sharedComponents/themeProvider";
 import MainContextProvider from "@/sharedComponents/contexts/mainContext";
 import UserContextProvider from "./contexts/userContext";
 import Toast from "@/sharedComponents/toast";
-import { RouteGroupIf } from "@/sharedComponents/navigator";
 import { CssVarsTheme, Theme } from "@mui/material/styles";
 import { StaticImageData } from "next/image";
-import { getAuthUserOrUndefined } from "@/sharedComponents/lib/actions/auth";
+import { getAuthUserForClient } from "@/sharedComponents/lib/actions/auth";
 
 interface MainLayoutIf {
     children: ReactNode;
     theme: Omit<Theme, "palette" | "applyStyles"> & CssVarsTheme;
-    groupedRoutes: RouteGroupIf[];
     websiteName: string;
     websiteAvatar: StaticImageData;
 }
@@ -21,11 +19,10 @@ interface MainLayoutIf {
 export async function MainLayout({
     children,
     theme,
-    groupedRoutes,
     websiteName,
     websiteAvatar,
 }: MainLayoutIf) {
-    const user = await getAuthUserOrUndefined();
+    const user = await getAuthUserForClient();
     return (
         <html lang="en" suppressHydrationWarning={true}>
             <body>
@@ -33,7 +30,6 @@ export async function MainLayout({
                     <MainContextProvider>
                         <UserContextProvider user={user}>
                             <PageWrapper
-                                groupedRoutes={groupedRoutes}
                                 websiteName={websiteName}
                                 websiteAvatar={websiteAvatar}
                             >

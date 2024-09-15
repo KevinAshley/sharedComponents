@@ -1,26 +1,27 @@
 "use client";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import AppBar from "@mui/material/AppBar";
 import Grid from "@mui/material/Grid";
 import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
 import Toolbar from "@mui/material/Toolbar";
 import PaletteModeSwitch from "@/sharedComponents/paletteModeSwitch";
-import Navigator, { RouteGroupIf } from "@/sharedComponents/navigator";
+import Navigator from "@/sharedComponents/navigator";
 import Avatar from "@mui/material/Avatar";
 import Image, { StaticImageData } from "next/image";
 import Container from "@mui/material/Container";
-import LoginAvatar from "./loginAvatar";
+import LoginAvatar from "@/sharedComponents/loginAvatar";
+import { groupedRoutes, groupedRoutesForAdmins } from "@/routes";
+import { UserContext } from "@/sharedComponents/contexts/userContext";
 
 function Header({
-    groupedRoutes,
     websiteName,
     websiteAvatar,
 }: {
-    groupedRoutes: RouteGroupIf[];
     websiteName: string;
     websiteAvatar: StaticImageData;
 }) {
+    const { userIsAdmin } = useContext(UserContext);
     const [mobileOpen, setMobileOpen] = useState(false);
 
     const handleDrawerToggle = () => {
@@ -32,7 +33,9 @@ function Header({
             <Navigator
                 open={mobileOpen}
                 onClose={handleDrawerToggle}
-                groupedRoutes={groupedRoutes}
+                groupedRoutes={
+                    userIsAdmin ? groupedRoutesForAdmins : groupedRoutes
+                }
             />
             <AppBar
                 color="primary"

@@ -6,6 +6,7 @@ import { auth } from "@/auth";
 import { FormValuesIf } from "@/sharedComponents/form";
 import { PrismaClient, User } from "@prisma/client";
 import { createPasswordHash } from "@/sharedComponents/nextApi/authentication";
+import { UserContextUser } from "@/sharedComponents/types";
 
 const prisma = new PrismaClient();
 
@@ -36,10 +37,13 @@ export async function getAuthUser(): Promise<User> {
     throw new Error("Invalid Auth User");
 }
 
-export async function getAuthUserOrUndefined(): Promise<User | undefined> {
+export async function getAuthUserForClient(): Promise<
+    UserContextUser | undefined
+> {
     try {
         const user = await getAuthUser();
-        return user;
+        const { password, ...userContextUserProps } = user;
+        return userContextUserProps;
     } catch (error) {
         return undefined;
     }
