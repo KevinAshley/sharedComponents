@@ -1,6 +1,6 @@
 import Grid from "@mui/material/Grid";
 import ReportTwoToneIcon from "@mui/icons-material/ReportTwoTone";
-import Box from "@mui/system/Box";
+import Box from "@mui/material/Box";
 import RoutedLink from "@/sharedComponents/routedLink";
 
 export default function PageNotFound() {

@@ -1,7 +1,7 @@
 "use client";
 
 import Grid from "@mui/material/Grid";
-import Container from "@mui/system/Container";
+import Container from "@mui/material/Container";
 import { ReactNode } from "react";
 
 const SubPageWrapper = ({
