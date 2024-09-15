@@ -1,3 +1,4 @@
+import { FunctionComponent, ReactNode } from "react";
 import { User } from "@prisma/client";
 import { OverridableComponent } from "@mui/material/OverridableComponent";
 import { SvgIconTypeMap } from "@mui/material/SvgIcon";
@@ -16,6 +17,8 @@ export interface RouteIf {
     label: string;
     path: string;
     icon: OverridableComponent<SvgIconTypeMap<{}, "svg">>;
+    component: FunctionComponent;
+    componentWrapper?: FunctionComponent<{ children: ReactNode }>;
     // allow additional props
     [x: string]: unknown;
 }
