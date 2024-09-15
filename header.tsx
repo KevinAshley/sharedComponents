@@ -14,13 +14,9 @@ import LoginAvatar from "@/sharedComponents/loginAvatar";
 import { groupedRoutes, groupedRoutesForAdmins } from "@/routes";
 import { UserContext } from "@/sharedComponents/contexts/userContext";
 
-function Header({
-    websiteName,
-    websiteAvatar,
-}: {
-    websiteName: string;
-    websiteAvatar: StaticImageData;
-}) {
+const websiteName = process.env.NEXT_PUBLIC_WEBSITE_NAME as string;
+
+function Header({ websiteAvatar }: { websiteAvatar: StaticImageData }) {
     const { userIsAdmin } = useContext(UserContext);
     const [mobileOpen, setMobileOpen] = useState(false);
 

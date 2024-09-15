@@ -3,7 +3,7 @@ import Copyright from "@/sharedComponents/copyright";
 
 const height = "36px;";
 
-const Footer = ({ websiteName }: { websiteName: string }) => {
+const Footer = () => {
     return (
         <Box
             sx={{
@@ -30,7 +30,7 @@ const Footer = ({ websiteName }: { websiteName: string }) => {
                         height,
                     }}
                 >
-                    <Copyright websiteName={websiteName} />
+                    <Copyright />
                 </Box>
             </Box>
         </Box>

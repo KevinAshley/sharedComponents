@@ -12,14 +12,12 @@ import { getAuthUserForClient } from "@/sharedComponents/lib/actions/auth";
 interface MainLayoutIf {
     children: ReactNode;
     theme: Omit<Theme, "palette" | "applyStyles"> & CssVarsTheme;
-    websiteName: string;
     websiteAvatar: StaticImageData;
 }
 
 export async function MainLayout({
     children,
     theme,
-    websiteName,
     websiteAvatar,
 }: MainLayoutIf) {
     const user = await getAuthUserForClient();
@@ -29,10 +27,7 @@ export async function MainLayout({
                 <ThemeProvider theme={theme}>
                     <MainContextProvider>
                         <UserContextProvider user={user}>
-                            <PageWrapper
-                                websiteName={websiteName}
-                                websiteAvatar={websiteAvatar}
-                            >
+                            <PageWrapper websiteAvatar={websiteAvatar}>
                                 {children}
                             </PageWrapper>
                             <Toast />
