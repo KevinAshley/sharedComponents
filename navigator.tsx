@@ -12,22 +12,8 @@ import Link from "next/link";
 import CloseIcon from "@mui/icons-material/Close";
 import IconButton from "@mui/material/IconButton";
 import { usePathname } from "next/navigation";
-import { SvgIconTypeMap } from "@mui/material/SvgIcon";
-import { OverridableComponent } from "@mui/material/OverridableComponent";
 import ListSubheader from "@mui/material/ListSubheader";
-
-interface RouteIf {
-    label: string;
-    path: string;
-    icon: OverridableComponent<SvgIconTypeMap<{}, "svg">>;
-    // allow additional props
-    [x: string]: unknown;
-}
-
-export interface RouteGroupIf {
-    label?: string;
-    routes: RouteIf[];
-}
+import { RouteGroupIf } from "@/sharedComponents/types";
 
 interface NavigatorIf {
     open: boolean;
