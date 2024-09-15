@@ -19,8 +19,7 @@ export interface RouteIf {
     icon: OverridableComponent<SvgIconTypeMap<{}, "svg">>;
     component: FunctionComponent;
     componentWrapper?: FunctionComponent<{ children: ReactNode }>;
-    // allow additional props
-    [x: string]: unknown;
+    github?: string;
 }
 
 export interface RouteGroupIf {
