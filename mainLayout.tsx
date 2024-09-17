@@ -6,20 +6,14 @@ import MainContextProvider from "@/sharedComponents/contexts/mainContext";
 import UserContextProvider from "./contexts/userContext";
 import Toast from "@/sharedComponents/toast";
 import { CssVarsTheme, Theme } from "@mui/material/styles";
-import { StaticImageData } from "next/image";
 import { getAuthUserForClient } from "@/sharedComponents/lib/actions/auth";
 
 interface MainLayoutIf {
     children: ReactNode;
     theme: Omit<Theme, "palette" | "applyStyles"> & CssVarsTheme;
-    websiteAvatar: StaticImageData;
 }
 
-export async function MainLayout({
-    children,
-    theme,
-    websiteAvatar,
-}: MainLayoutIf) {
+export async function MainLayout({ children, theme }: MainLayoutIf) {
     const user = await getAuthUserForClient();
     return (
         <html lang="en" suppressHydrationWarning={true}>
@@ -27,9 +21,7 @@ export async function MainLayout({
                 <ThemeProvider theme={theme}>
                     <MainContextProvider>
                         <UserContextProvider user={user}>
-                            <PageWrapper websiteAvatar={websiteAvatar}>
-                                {children}
-                            </PageWrapper>
+                            <PageWrapper>{children}</PageWrapper>
                             <Toast />
                         </UserContextProvider>
                     </MainContextProvider>

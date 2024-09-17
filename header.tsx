@@ -8,15 +8,16 @@ import Toolbar from "@mui/material/Toolbar";
 import PaletteModeSwitch from "@/sharedComponents/paletteModeSwitch";
 import Navigator from "@/sharedComponents/navigator";
 import Avatar from "@mui/material/Avatar";
-import Image, { StaticImageData } from "next/image";
 import Container from "@mui/material/Container";
 import LoginAvatar from "@/sharedComponents/loginAvatar";
 import { groupedRoutes, groupedRoutesForAdmins } from "@/routes";
 import { UserContext } from "@/sharedComponents/contexts/userContext";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCode } from "@fortawesome/free-solid-svg-icons";
 
 const websiteName = process.env.NEXT_PUBLIC_WEBSITE_NAME as string;
 
-function Header({ websiteAvatar }: { websiteAvatar: StaticImageData }) {
+function Header() {
     const { userIsAdmin } = useContext(UserContext);
     const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -55,13 +56,13 @@ function Header({ websiteAvatar }: { websiteAvatar: StaticImageData }) {
                                 <Avatar
                                     sx={{
                                         border: `3px solid var(--mui-palette-primary-dark)`,
+                                        backgroundColor:
+                                            "var(--mui-palette-primary-light)",
                                     }}
                                 >
-                                    <Image
-                                        src={websiteAvatar}
-                                        alt="kevin gray sky"
-                                        width={40}
-                                        height={40}
+                                    <FontAwesomeIcon
+                                        icon={faCode}
+                                        size={"1x"}
                                     />
                                 </Avatar>
                             </Grid>
