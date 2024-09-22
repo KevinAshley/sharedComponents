@@ -14,6 +14,7 @@ import { groupedRoutes, groupedRoutesForAdmins } from "@/routes";
 import { UserContext } from "@/sharedComponents/contexts/userContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCode } from "@fortawesome/free-solid-svg-icons";
+import NextLink from "next/link";
 
 const websiteName = process.env.NEXT_PUBLIC_WEBSITE_NAME as string;
 
@@ -51,8 +52,25 @@ function Header() {
                             },
                         })}
                     >
-                        <Grid container spacing={2} alignItems="center">
-                            <Grid item>
+                        <Grid
+                            container
+                            spacing={2}
+                            alignItems="center"
+                            justifyContent={"space-between"}
+                        >
+                            <Grid
+                                item
+                                component={NextLink}
+                                href={"/"}
+                                sx={{
+                                    display: "flex",
+                                    gap: "1rem",
+                                    alignItems: "center",
+                                    color: "inherit",
+                                    textDecoration: "none",
+                                    fontFamily: "monospace",
+                                }}
+                            >
                                 <Avatar
                                     sx={{
                                         border: `3px solid var(--mui-palette-primary-dark)`,
@@ -65,34 +83,27 @@ function Header() {
                                         size={"1x"}
                                     />
                                 </Avatar>
-                            </Grid>
-                            <Grid
-                                sx={{
-                                    display: {
-                                        // textTransform: "uppercase",
-                                        fontFamily: "monospace",
-                                    },
-                                }}
-                                item
-                            >
-                                {websiteName}
-                            </Grid>
-                            <Grid item xs />
-                            <Grid item>
-                                <PaletteModeSwitch />
+                                <span>{websiteName}</span>
                             </Grid>
                             <Grid item>
-                                <LoginAvatar />
-                            </Grid>
-                            <Grid item>
-                                <IconButton
-                                    color="inherit"
-                                    aria-label="open drawer"
-                                    onClick={handleDrawerToggle}
-                                    edge="start"
-                                >
-                                    <MenuIcon />
-                                </IconButton>
+                                <Grid container spacing={2}>
+                                    <Grid item>
+                                        <PaletteModeSwitch />
+                                    </Grid>
+                                    <Grid item>
+                                        <LoginAvatar />
+                                    </Grid>
+                                    <Grid item>
+                                        <IconButton
+                                            color="inherit"
+                                            aria-label="open drawer"
+                                            onClick={handleDrawerToggle}
+                                            edge="start"
+                                        >
+                                            <MenuIcon />
+                                        </IconButton>
+                                    </Grid>
+                                </Grid>
                             </Grid>
                         </Grid>
                     </Container>
