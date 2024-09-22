@@ -7,33 +7,52 @@ import { getAuthUser } from "./auth";
 const prisma = new PrismaClient();
 
 export async function getTodoItems() {
-    const user = await getAuthUser();
-    const todoItems = await prisma.todoItem.findMany({
-        select: {
-            id: true,
-            name: true,
-            completed: true,
-            createdAt: true,
-            updatedAt: true,
-        },
-        where: {
-            userId: user.id,
-        },
-    });
-    return todoItems;
+    try {
+        const user = await getAuthUser();
+        const todoItems = await prisma.todoItem.findMany({
+            select: {
+                id: true,
+                name: true,
+                completed: true,
+                createdAt: true,
+                updatedAt: true,
+            },
+            where: {
+                userId: user.id,
+            },
+        });
+        return {
+            success: true,
+            items: todoItems,
+        };
+    } catch (error: any) {
+        return {
+            success: false,
+            errorMessage: error.message,
+        };
+    }
 }
 
 export async function addTodoItem(data: FormValuesIf) {
-    const user = await getAuthUser();
-    const { name, completed } = data as TodoItem;
-    await prisma.todoItem.create({
-        data: {
-            name,
-            completed,
-            userId: user.id,
-        },
-    });
-    return true;
+    try {
+        const user = await getAuthUser();
+        const { name, completed } = data as TodoItem;
+        await prisma.todoItem.create({
+            data: {
+                name,
+                completed,
+                userId: user.id,
+            },
+        });
+        return {
+            success: true,
+        };
+    } catch (error: any) {
+        return {
+            success: false,
+            errorMessage: error.message,
+        };
+    }
 }
 
 export async function editTodoItem({
@@ -43,32 +62,50 @@ export async function editTodoItem({
     id: number;
     changedValues: FormValuesIf;
 }) {
-    const user = await getAuthUser();
-    const updatedItem = await prisma.todoItem.update({
-        where: {
-            id,
-            userId: user.id,
-        },
-        data: changedValues,
-    });
-    if (!updatedItem) {
-        throw new Error("Forbidden to edit this Todo Item");
+    try {
+        const user = await getAuthUser();
+        const updatedItem = await prisma.todoItem.update({
+            where: {
+                id,
+                userId: user.id,
+            },
+            data: changedValues,
+        });
+        if (!updatedItem) {
+            throw new Error("Forbidden to edit this Todo Item");
+        }
+        return {
+            success: true,
+        };
+    } catch (error: any) {
+        return {
+            success: false,
+            errorMessage: error.message,
+        };
     }
-    return true;
 }
 
 export async function deleteTodoItems(selectedIds: number[]) {
-    const user = await getAuthUser();
-    const deletedItems = await prisma.todoItem.deleteMany({
-        where: {
-            id: {
-                in: selectedIds,
+    try {
+        const user = await getAuthUser();
+        const deletedItems = await prisma.todoItem.deleteMany({
+            where: {
+                id: {
+                    in: selectedIds,
+                },
+                userId: user.id,
             },
-            userId: user.id,
-        },
-    });
-    if (!deletedItems) {
-        throw new Error("Forbidden to delete these Todo Items");
+        });
+        if (!deletedItems) {
+            throw new Error("Forbidden to delete these Todo Items");
+        }
+        return {
+            success: true,
+        };
+    } catch (error: any) {
+        return {
+            success: false,
+            errorMessage: error.message,
+        };
     }
-    return true;
 }

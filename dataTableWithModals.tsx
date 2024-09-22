@@ -94,7 +94,12 @@ const DataTableWithModalsInner = ({
     const loadItems = useCallback(() => {
         setLoading(true);
         getItems()
-            .then(setItems)
+            .then((response) => {
+                if (!response.success) {
+                    throw new Error(response.errorMessage);
+                }
+                setItems(response.items);
+            })
             .catch((err) => {
                 setToast({
                     message: err.message,
@@ -114,7 +119,10 @@ const DataTableWithModalsInner = ({
     const handleAddItem = (values: FormValuesIf) => {
         setProcessing(true);
         addItem(values)
-            .then(() => {
+            .then((response) => {
+                if (!response.success) {
+                    throw new Error(response.errorMessage);
+                }
                 handleCloseAddNewModal();
                 loadItems();
                 setToast({
@@ -139,7 +147,10 @@ const DataTableWithModalsInner = ({
             id: editingItem?.id || -1, // negative ID will result in an intentional error
             changedValues,
         })
-            .then(() => {
+            .then((response) => {
+                if (!response.success) {
+                    throw new Error(response.errorMessage);
+                }
                 handleCloseEditingModal();
                 loadItems();
                 setToast({
@@ -162,7 +173,10 @@ const DataTableWithModalsInner = ({
         setProcessing(true);
         const deletionCount = selectedIds.length;
         deleteSelectedItems(selectedIds)
-            .then(() => {
+            .then((response) => {
+                if (!response.success) {
+                    throw new Error(response.errorMessage);
+                }
                 setSelectedIds([]);
                 loadItems();
                 handleCloseDeleteModal();
