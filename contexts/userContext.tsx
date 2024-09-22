@@ -123,7 +123,11 @@ const UserContextProvider = (props: {
     const handleLogin = (values: FormValuesIf) => {
         setProcessing(true);
         userLogin(values)
-            .then(() => {
+            .then((response) => {
+                console.log("KEVIN", response);
+                if (!response.success) {
+                    throw new Error(response.errorMessage);
+                }
                 setToast({
                     message: `Successfully logged in!`,
                     variant: ToastVariant.SUCCESS,
@@ -145,7 +149,10 @@ const UserContextProvider = (props: {
     const handleSignup = (values: FormValuesIf) => {
         setProcessing(true);
         userSignup(values)
-            .then(() => {
+            .then((response) => {
+                if (!response.success) {
+                    throw new Error(response.errorMessage);
+                }
                 setToast({
                     message: `Successfully signed up!`,
                     variant: ToastVariant.SUCCESS,
@@ -167,7 +174,10 @@ const UserContextProvider = (props: {
     const handleLogout = (values: FormValuesIf) => {
         setProcessing(true);
         userLogout()
-            .then(() => {
+            .then((response) => {
+                if (!response.success) {
+                    throw new Error(response.errorMessage);
+                }
                 setUserModalIsOpen(false);
                 setToast({
                     message: `Successfully logged out!`,

@@ -51,40 +51,64 @@ export async function getAuthUserForClient(): Promise<
 
 export async function userLogin(values: FormValuesIf) {
     try {
-        const formData = new FormData();
-        Object.entries(values).map(([key, value]) => {
-            formData.set(key, value as any);
+        await signIn("credentials", {
+            ...values,
+            redirect: false,
         });
-        await signIn("credentials", formData);
+        return {
+            success: true,
+        };
     } catch (error) {
         if (error instanceof AuthError) {
-            throw new Error("Invalid email or password");
+            return {
+                success: false,
+                errorMessage: "Invalid email or password",
+            };
         }
-        throw error;
+        const otherError = error as any;
+        return {
+            success: false,
+            errorMessage: otherError.message,
+        };
     }
 }
 
 export async function userLogout() {
     try {
-        await signOut();
-    } catch (error) {
-        throw error;
+        await signOut({ redirect: false });
+        return {
+            success: true,
+        };
+    } catch (error: any) {
+        return {
+            success: false,
+            errorMessage: error.message,
+        };
     }
 }
 
 export async function userSignup(values: FormValuesIf) {
     try {
         await createNonAdminUser(values);
-        const formData = new FormData();
-        Object.entries(values).map(([key, value]) => {
-            formData.set(key, value as any);
+        await signIn("credentials", {
+            ...values,
+            redirect: false,
         });
-        await signIn("credentials", formData);
+        return {
+            success: true,
+        };
     } catch (error) {
         if (error instanceof AuthError) {
-            throw new Error("Invalid email or password");
+            return {
+                success: false,
+                errorMessage: "Invalid email or password",
+            };
         }
-        throw error;
+        const otherError = error as any;
+        return {
+            success: false,
+            errorMessage: otherError.message,
+        };
     }
 }
 
