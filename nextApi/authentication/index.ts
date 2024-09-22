@@ -1,14 +1,7 @@
 import { createHash } from "crypto";
 
-const isProduction = process.env.NODE_ENV === "production";
-
-const passwordSalt = isProduction
-    ? process.env.PASSWORD_SALT_PROD
-    : process.env.PASSWORD_SALT_DEV;
-
-const passwordPepper = isProduction
-    ? process.env.PASSWORD_PEPPER_PROD
-    : process.env.PASSWORD_PEPPER_DEV;
+const passwordSalt = process.env.PASSWORD_SALT as string;
+const passwordPepper = process.env.PASSWORD_PEPPER as string;
 
 function getRandomIdString() {
     return Math.random().toString(36).slice(2);
@@ -21,8 +14,8 @@ const createHashWithSaltAndPepper = ({
 }: // if salt or pepper are missing, our hash will be random
 {
     secret: string;
-    salt?: string;
-    pepper?: string;
+    salt: string;
+    pepper: string;
 }) => {
     return createHash("SHA256")
         .update(salt + secret + pepper)
