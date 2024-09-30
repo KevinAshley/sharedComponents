@@ -9,13 +9,14 @@ import {
     SetStateAction,
     useCallback,
 } from "react";
-
+import LockTwoToneIcon from "@mui/icons-material/LockTwoTone";
 import UncontrolledModalForm from "@/sharedComponents/modalFormUncontrolled";
 import { FormValuesIf, InputIf } from "@/sharedComponents/form";
 import { MainContext, ToastVariant } from "./mainContext";
 import Box from "@mui/material/Box";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
-import { Typography } from "@mui/material";
+import Typography from "@mui/material/Typography";
+import { alpha } from "@mui/material/styles";
 import RoutedLink from "@/sharedComponents/routedLink";
 import {
     userSignup,
@@ -24,6 +25,7 @@ import {
     getAuthUserForClient,
 } from "@/sharedComponents/lib/actions/auth";
 import { UserContextUser } from "@/sharedComponents/types";
+import AuthModalPrepend from "../authModalPrepend";
 
 interface UserContextIf {
     user?: UserContextUser;
@@ -229,24 +231,11 @@ const UserContextProvider = (props: {
                 initialValues={{}}
                 submitChangesOnly={true}
                 prependContent={
-                    <Box
-                        sx={{
-                            display: "flex",
-                            flexDirection: "column",
-                            alignItems: "center",
-                            justifyContent: "center",
-                        }}
-                    >
-                        <AccountCircleIcon
-                            sx={{ fontSize: "6rem", marginBottom: "1rem" }}
-                        />
-                        <Typography variant={"body1"}>
-                            Not registered?{" "}
-                            <RoutedLink href={"#"} onClick={switchToSignUp}>
-                                Sign up
-                            </RoutedLink>
-                        </Typography>
-                    </Box>
+                    <AuthModalPrepend
+                        text={"Not registered?"}
+                        linkText={"Sign up"}
+                        onLinkClick={switchToSignUp}
+                    />
                 }
             />
             <UncontrolledModalForm
@@ -259,24 +248,11 @@ const UserContextProvider = (props: {
                 initialValues={{}}
                 submitChangesOnly={true}
                 prependContent={
-                    <Box
-                        sx={{
-                            display: "flex",
-                            flexDirection: "column",
-                            alignItems: "center",
-                            justifyContent: "center",
-                        }}
-                    >
-                        <AccountCircleIcon
-                            sx={{ fontSize: "6rem", marginBottom: "1rem" }}
-                        />
-                        <Typography variant={"body1"}>
-                            Already registered?{" "}
-                            <RoutedLink href={"#"} onClick={switchToSignIn}>
-                                Sign In
-                            </RoutedLink>
-                        </Typography>
-                    </Box>
+                    <AuthModalPrepend
+                        text={"Already registered?"}
+                        linkText={"Sign In"}
+                        onLinkClick={switchToSignIn}
+                    />
                 }
             />
 
@@ -292,6 +268,18 @@ const UserContextProvider = (props: {
                     log_out: false,
                 }}
                 submitChangesOnly={true}
+                prependContent={
+                    <Box
+                        sx={{
+                            display: "flex",
+                            flexDirection: "column",
+                            alignItems: "center",
+                            justifyContent: "center",
+                        }}
+                    >
+                        <AccountCircleIcon sx={{ fontSize: "6rem" }} />
+                    </Box>
+                }
             />
         </UserContext.Provider>
     );

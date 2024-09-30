@@ -7,6 +7,7 @@ import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
 import Divider from "@mui/material/Divider";
+import Box from "@mui/material/Box";
 
 const Modal = ({
     title,
@@ -49,14 +50,18 @@ const Modal = ({
                     <CloseIcon />
                 </IconButton>
             </DialogTitle>
-            {!!prependContent && (
-                <Fragment>
-                    <Divider />
-                    <DialogContent>{prependContent}</DialogContent>
-                </Fragment>
-            )}
 
-            <DialogContent dividers={true}>{children}</DialogContent>
+            <DialogContent dividers={true}>
+                {!!prependContent && (
+                    <Fragment>
+                        {prependContent}
+                        <Box my={3}>
+                            <Divider />
+                        </Box>
+                    </Fragment>
+                )}
+                {children}
+            </DialogContent>
             <DialogActions sx={{ padding: "8px 24px" }}>
                 {!noCancel && (
                     <Button onClick={handleClose} disabled={processing}>
