@@ -54,6 +54,7 @@ const Modal = ({
             <DialogContent dividers={true}>
                 {!!prependContent && (
                     <Fragment>
+                        <Box pt={2}></Box>
                         {prependContent}
                         <Box my={3}>
                             <Divider />

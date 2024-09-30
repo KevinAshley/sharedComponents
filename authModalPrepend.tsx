@@ -23,7 +23,6 @@ const AuthModalPrepend = ({
                 flexDirection: "column",
                 alignItems: "center",
                 justifyContent: "center",
-                marginTop: "1rem",
             }}
         >
             <Box
