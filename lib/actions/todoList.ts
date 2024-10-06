@@ -72,7 +72,7 @@ export async function editTodoItem({
             data: changedValues,
         });
         if (!updatedItem) {
-            throw new Error("Forbidden to edit this Todo Item");
+            throw new Error("Failed to update Todo Item");
         }
         return {
             success: true,
@@ -97,7 +97,7 @@ export async function deleteTodoItems(selectedIds: number[]) {
             },
         });
         if (!deletedItems) {
-            throw new Error("Forbidden to delete these Todo Items");
+            throw new Error("Failed to delete Todo Items");
         }
         return {
             success: true,

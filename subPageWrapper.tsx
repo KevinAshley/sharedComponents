@@ -20,7 +20,7 @@ const SubPageWrapper = ({
                 },
             })}
         >
-            <Grid container mt={6}>
+            <Grid container mt={6} mb={6}>
                 <Grid item xs={12}>
                     {children}
                 </Grid>
