@@ -3,11 +3,7 @@ import Copyright from "@/sharedComponents/copyright";
 
 const Footer = () => {
     return (
-        <Box
-            sx={{
-                marginTop: "4rem",
-            }}
-        >
+        <Box>
             <Box
                 sx={{
                     px: 2,
