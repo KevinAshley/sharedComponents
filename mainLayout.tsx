@@ -1,4 +1,5 @@
 "use server";
+
 import { ReactNode } from "react";
 import PageWrapper from "@/sharedComponents/pageWrapper";
 import ThemeProvider from "@/sharedComponents/themeProvider";
@@ -7,6 +8,7 @@ import UserContextProvider from "./contexts/userContext";
 import Toast from "@/sharedComponents/toast";
 import { CssVarsTheme, Theme } from "@mui/material/styles";
 import { getAuthUserForClient } from "@/sharedComponents/lib/actions/auth";
+import GoogleAnalytics from "@/sharedComponents/googleAnalytics";
 
 interface MainLayoutIf {
     children: ReactNode;
@@ -27,6 +29,7 @@ export async function MainLayout({ children, theme }: MainLayoutIf) {
                     </MainContextProvider>
                 </ThemeProvider>
             </body>
+            <GoogleAnalytics />
         </html>
     );
 }
