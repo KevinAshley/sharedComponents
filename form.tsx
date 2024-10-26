@@ -23,6 +23,7 @@ export interface InputIf {
     required?: boolean;
     autoComplete?: boolean;
     disabled?: boolean;
+    multiline?: boolean;
 }
 
 export interface FormValuesIf {
@@ -39,10 +40,6 @@ export interface FormIf {
     submitDisabled?: boolean;
     submitChangesOnly?: boolean;
 }
-
-const getRandomNumberString = () => {
-    return Math.floor(Math.random() * 100000).toString();
-};
 
 const Form = React.forwardRef(
     (
@@ -61,7 +58,6 @@ const Form = React.forwardRef(
         const initialValues = useRef(values);
 
         const [hpCheckboxIsChecked, setHpCheckboxIsChecked] = useState(false);
-        const randomNumberString = useMemo(() => getRandomNumberString(), []);
         const formRef = useRef<any>();
 
         const changedValues = useMemo(() => {
@@ -117,6 +113,7 @@ const Form = React.forwardRef(
                             required,
                             autoComplete,
                             disabled,
+                            multiline,
                         } = thisInput;
                         const value = values[id];
                         const handleChange = (
@@ -161,6 +158,8 @@ const Form = React.forwardRef(
                                         fullWidth={true}
                                         disabled={disabled || processing}
                                         autoFocus={index === 0}
+                                        multiline={multiline}
+                                        rows={multiline ? 4 : undefined}
                                     />
                                 )}
                             </Box>
@@ -174,7 +173,7 @@ const Form = React.forwardRef(
                         <input
                             // this is a honeypot input
                             type={"checkbox"}
-                            autoComplete={randomNumberString}
+                            autoComplete={"robots"}
                             checked={hpCheckboxIsChecked}
                             onChange={handleChangeHpInput}
                         />
