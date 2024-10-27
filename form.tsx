@@ -32,8 +32,6 @@ const Form = React.forwardRef(
     ) => {
         const initialValues = useRef(values);
 
-        console.log("values", values);
-
         const [hpCheckboxIsChecked, setHpCheckboxIsChecked] = useState(false);
         const formRef = useRef<any>();
 
