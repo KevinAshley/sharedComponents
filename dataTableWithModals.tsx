@@ -17,7 +17,10 @@ import {
     ToastVariant,
 } from "@/sharedComponents/contexts/mainContext";
 import UncontrolledModalForm from "@/sharedComponents/modalFormUncontrolled";
-import { FormValuesIf, InputIf } from "@/sharedComponents/form";
+import {
+    FormValuesIf,
+    InputIf,
+} from "@/sharedComponents/formComponents/formInterfaces";
 import { UserContext } from "@/sharedComponents/contexts/userContext";
 import Box from "@mui/material/Box";
 import ReportIcon from "@mui/icons-material/Report";

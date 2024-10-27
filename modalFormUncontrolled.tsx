@@ -1,5 +1,5 @@
 import { Fragment, useState } from "react";
-import { FormValuesIf } from "./form";
+import { FormValuesIf } from "./formComponents/formInterfaces";
 import ModalForm, { ModalFormIf } from "./modalForm";
 
 interface UncontrolledModalFormIf

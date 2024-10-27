@@ -1,6 +1,6 @@
 "use server";
 
-import { FormValuesIf } from "@/sharedComponents/form";
+import { FormValuesIf } from "@/sharedComponents/formComponents/formInterfaces";
 import { PrismaClient, ContactFormSubmission } from "@prisma/client";
 
 const prisma = new PrismaClient();

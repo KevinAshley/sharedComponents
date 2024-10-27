@@ -1,7 +1,7 @@
 "use server";
 
 import { PrismaClient, TodoItem, User } from "@prisma/client";
-import { FormValuesIf } from "@/sharedComponents/form";
+import { FormValuesIf } from "@/sharedComponents/formComponents/formInterfaces";
 import { getAuthUser, throwErrorIfUserIsNotAdmin } from "./auth";
 import { createPasswordHash } from "@/sharedComponents/nextApi/authentication";
 

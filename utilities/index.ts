@@ -1,4 +1,4 @@
-import { FormValuesIf } from "@/sharedComponents/form";
+import { FormValuesIf } from "@/sharedComponents/formComponents/formInterfaces";
 
 export const getChangedFormValues = ({
     values,

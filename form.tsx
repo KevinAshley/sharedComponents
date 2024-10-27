@@ -4,42 +4,14 @@ import React, {
     useState,
     FormEvent,
     useImperativeHandle,
-    SetStateAction,
-    Dispatch,
     useMemo,
 } from "react";
 import Box from "@mui/material/Box";
-import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Checkbox from "@mui/material/Checkbox";
 import CircularProgress from "@mui/material/CircularProgress";
 import { getChangedFormValues } from "@/sharedComponents/utilities";
-
-export interface InputIf {
-    type: string;
-    label: string;
-    id: string;
-    required?: boolean;
-    autoComplete?: boolean;
-    disabled?: boolean;
-    multiline?: boolean;
-}
-
-export interface FormValuesIf {
-    [key: string]: string | number | Date | boolean | null;
-}
-
-export interface FormIf {
-    inputs: InputIf[];
-    handleSubmit: Function;
-    values: FormValuesIf;
-    setValues: Dispatch<SetStateAction<FormValuesIf>>;
-    noSubmitButton?: boolean;
-    processing?: boolean;
-    submitDisabled?: boolean;
-    submitChangesOnly?: boolean;
-}
+import { FormIf } from "@/sharedComponents/formComponents/formInterfaces";
+import InputSwitch from "./formComponents/inputSwitch";
 
 const Form = React.forwardRef(
     (
@@ -106,15 +78,7 @@ const Form = React.forwardRef(
                     }}
                 >
                     {inputs.map((thisInput, index) => {
-                        const {
-                            type,
-                            label,
-                            id,
-                            required,
-                            autoComplete,
-                            disabled,
-                            multiline,
-                        } = thisInput;
+                        const { type, id, disabled } = thisInput;
                         const value = values[id];
                         const handleChange = (
                             e: React.ChangeEvent<HTMLInputElement>
@@ -130,39 +94,14 @@ const Form = React.forwardRef(
                             });
                         };
                         return (
-                            <Box key={index}>
-                                {type === "checkbox" ? (
-                                    <FormControlLabel
-                                        control={
-                                            <Checkbox
-                                                checked={!!value}
-                                                onChange={handleChange}
-                                            />
-                                        }
-                                        label={label}
-                                        required={required}
-                                        disabled={disabled || processing}
-                                    />
-                                ) : (
-                                    <TextField
-                                        type={type}
-                                        label={label}
-                                        size={"small"}
-                                        name={id}
-                                        value={value || ""}
-                                        required={required}
-                                        autoComplete={
-                                            autoComplete ? undefined : "off"
-                                        }
-                                        onChange={handleChange}
-                                        fullWidth={true}
-                                        disabled={disabled || processing}
-                                        autoFocus={index === 0}
-                                        multiline={multiline}
-                                        rows={multiline ? 4 : undefined}
-                                    />
-                                )}
-                            </Box>
+                            <InputSwitch
+                                key={index}
+                                {...thisInput}
+                                value={value}
+                                onChange={handleChange}
+                                disabled={disabled || processing}
+                                autoFocus={index == 0}
+                            />
                         );
                     })}
                     <Box

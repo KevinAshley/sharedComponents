@@ -11,7 +11,10 @@ import {
 } from "react";
 import LockTwoToneIcon from "@mui/icons-material/LockTwoTone";
 import UncontrolledModalForm from "@/sharedComponents/modalFormUncontrolled";
-import { FormValuesIf, InputIf } from "@/sharedComponents/form";
+import {
+    FormValuesIf,
+    InputIf,
+} from "@/sharedComponents/formComponents/formInterfaces";
 import { MainContext, ToastVariant } from "./mainContext";
 import Box from "@mui/material/Box";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";

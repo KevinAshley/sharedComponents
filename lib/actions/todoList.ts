@@ -1,7 +1,7 @@
 "use server";
 
 import { PrismaClient, TodoItem } from "@prisma/client";
-import { FormValuesIf } from "@/sharedComponents/form";
+import { FormValuesIf } from "@/sharedComponents/formComponents/formInterfaces";
 import { getAuthUser } from "./auth";
 
 const prisma = new PrismaClient();

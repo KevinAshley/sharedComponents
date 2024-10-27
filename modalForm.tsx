@@ -1,6 +1,7 @@
 import { useRef, Ref, Fragment, useMemo, ReactNode } from "react";
 import Modal from "./modal";
-import Form, { FormIf, FormValuesIf } from "./form";
+import Form from "@/sharedComponents/form";
+import { FormIf, FormValuesIf } from "./formComponents/formInterfaces";
 import { getChangedFormValues } from "@/sharedComponents/utilities";
 
 export interface ModalFormIf extends FormIf {

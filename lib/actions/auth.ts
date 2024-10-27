@@ -3,7 +3,7 @@
 import { signIn, signOut } from "@/auth";
 import { AuthError } from "next-auth";
 import { auth } from "@/auth";
-import { FormValuesIf } from "@/sharedComponents/form";
+import { FormValuesIf } from "@/sharedComponents/formComponents/formInterfaces";
 import { PrismaClient, User } from "@prisma/client";
 import { createPasswordHash } from "@/sharedComponents/nextApi/authentication";
 import { UserContextUser } from "@/sharedComponents/types";
