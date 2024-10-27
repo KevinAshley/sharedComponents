@@ -7,9 +7,11 @@ import {
     FormValueType,
     InputIf,
 } from "@/sharedComponents/formComponents/formInterfaces";
+import TurnstileInput from "./turnstileInput";
 
 interface InputSwitchIf extends InputIf {
     value: FormValueType;
+    setValue: (p: FormValueType) => void;
     onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
     autoFocus?: boolean;
 }
@@ -25,36 +27,52 @@ const InputSwitch = (props: InputSwitchIf) => {
         multiline,
         autoFocus,
         value,
+        setValue,
         onChange,
     } = props;
-    return (
-        <Box>
-            {type === "checkbox" ? (
-                <FormControlLabel
-                    control={<Checkbox checked={!!value} onChange={onChange} />}
-                    label={label}
-                    required={required}
-                    disabled={disabled}
-                />
-            ) : (
-                <TextField
-                    type={type}
-                    label={label}
-                    size={"small"}
-                    name={id}
-                    value={value || ""}
-                    required={required}
-                    autoComplete={autoComplete ? undefined : "off"}
-                    onChange={onChange}
-                    fullWidth={true}
-                    disabled={disabled}
-                    autoFocus={autoFocus}
-                    multiline={multiline}
-                    rows={multiline ? 4 : undefined}
-                />
-            )}
-        </Box>
-    );
+    switch (type) {
+        case "turnstile":
+            return <TurnstileInput value={value} setValue={setValue} />;
+        case "checkbox":
+            const handleChange = () => {
+                setValue(!value);
+            };
+            return (
+                <Box>
+                    <FormControlLabel
+                        control={
+                            <Checkbox
+                                checked={!!value}
+                                onChange={handleChange}
+                            />
+                        }
+                        label={label}
+                        required={required}
+                        disabled={disabled}
+                    />
+                </Box>
+            );
+        default:
+            return (
+                <Box>
+                    <TextField
+                        type={type}
+                        label={label}
+                        size={"small"}
+                        name={id}
+                        value={value || ""}
+                        required={required}
+                        autoComplete={autoComplete ? undefined : "off"}
+                        onChange={onChange}
+                        fullWidth={true}
+                        disabled={disabled}
+                        autoFocus={autoFocus}
+                        multiline={multiline}
+                        rows={multiline ? 4 : undefined}
+                    />
+                </Box>
+            );
+    }
 };
 
 export default InputSwitch;

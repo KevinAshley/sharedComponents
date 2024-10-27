@@ -10,7 +10,10 @@ import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import CircularProgress from "@mui/material/CircularProgress";
 import { getChangedFormValues } from "@/sharedComponents/utilities";
-import { FormIf } from "@/sharedComponents/formComponents/formInterfaces";
+import {
+    FormIf,
+    FormValueType,
+} from "@/sharedComponents/formComponents/formInterfaces";
 import InputSwitch from "./formComponents/inputSwitch";
 
 const Form = React.forwardRef(
@@ -28,6 +31,8 @@ const Form = React.forwardRef(
         ref: Ref<{ submitTheForm: () => void }>
     ) => {
         const initialValues = useRef(values);
+
+        console.log("values", values);
 
         const [hpCheckboxIsChecked, setHpCheckboxIsChecked] = useState(false);
         const formRef = useRef<any>();
@@ -73,25 +78,25 @@ const Form = React.forwardRef(
                         display: "flex",
                         flexDirection: "column",
                         gap: "1rem",
-                        width: "250px",
+                        minWidth: "250px",
                         opacity: processing ? 0.5 : 1,
                     }}
                 >
                     {inputs.map((thisInput, index) => {
-                        const { type, id, disabled } = thisInput;
+                        const { id, disabled } = thisInput;
                         const value = values[id];
-                        const handleChange = (
-                            e: React.ChangeEvent<HTMLInputElement>
-                        ) => {
+                        const setValue = (newValue: FormValueType) => {
                             setValues((previousValues) => {
                                 return {
                                     ...previousValues,
-                                    [id]:
-                                        type === "checkbox"
-                                            ? !previousValues[id]
-                                            : e.target.value,
+                                    [id]: newValue,
                                 };
                             });
+                        };
+                        const handleChange = (
+                            e: React.ChangeEvent<HTMLInputElement>
+                        ) => {
+                            setValue(e.target.value);
                         };
                         return (
                             <InputSwitch
@@ -99,6 +104,7 @@ const Form = React.forwardRef(
                                 {...thisInput}
                                 value={value}
                                 onChange={handleChange}
+                                setValue={setValue}
                                 disabled={disabled || processing}
                                 autoFocus={index == 0}
                             />
